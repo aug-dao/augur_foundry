@@ -1,6 +1,7 @@
 {
   "networkId": "1",
   "ethereum": {
+    "network": "mainnet",
     "http": "https://eth-mainnet.alchemyapi.io/v2/Kd37_uEmJGwU6pYq6jrXaJXXi8u9IoOM",
     "rpcRetryCount": 5,
     "rpcRetryInterval": 0,
@@ -9,7 +10,8 @@
   },
   "gas": {
     "price": 1000000000,
-    "limit": 9500000
+    "limit": 9500000,
+    "override": false
   },
   "deploy": {
     "isProduction": true,
@@ -24,7 +26,16 @@
       "UniswapV2Router02": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
       "RelayHubV2": "0x5648B6306380689AF8d2DE7Bdd23D916b9eE0db5",
       "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-      "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+      "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      "SETH": "0x5e74C9036fb86BD7eCdcb084a0673EFc32eA31cb",
+      "BUSD": "0x4Fabb145d64652a948d72533023f6E7A623C7C53",
+      "TUSD": "0x0000000000085d4780B73119b644AE5ecd22b376",
+      "SUSD": "0x57Ab1ec28D129707052df4dF418D58a2D46d5f51",
+      "MUSD": "0xe2f2a5C287993345a840Db3B0845fbC70f5935a5",
+      "WBTC": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+      "renBTC": "0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D",
+      "SBTC": "0xfE18be6b3Bd88A2D2A7f928d00292E7a9963CfC6",
+      "TBTC": "0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa"
     },
     "writeArtifacts": true,
     "serial": true
@@ -114,7 +125,9 @@
     "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
     "AugurWalletRegistryV2": "0x1dD864Ed6F291b31C86aAF228DB387cd60a20e18",
     "RelayHubV2": "0x5648B6306380689AF8d2DE7Bdd23D916b9eE0db5",
-    "AccountLoader": "0x3A1b0Dde9Bf5Ff6C1C5d115b12B036EDFD3bF32a"
+    "AccountLoader": "0x6718d16e784c3417e05B9d3a73d807d873336a1E",
+    "ParaDeployer": "0x5408a392336a8D0aAc4Af915893EdE23aB8FdaA2",
+    "OINexus": "0x0b1b97D5fCF0EE6e0172F4805bCe3136F040b3ad"
   },
   "plugins": {
     "chat": "orbit"
@@ -122,7 +135,11 @@
   "warpSync": {
     "enabled": true,
     "autoReport": false,
-    "createCheckpoints": true
+    "createCheckpoints": true,
+    "ipfsEndpoint": {
+      "version": 1,
+      "url": "https://cloudflare-ipfs.com/"
+    }
   },
   "syncing": {
     "enabled": true
@@ -146,11 +163,36 @@
   "averageBlocktime": 15000,
   "ui": {
     "showReloadModal": false,
+    "liteProvider": "torus",
     "trackBestOffer": false,
     "trackMarketInvalidBids": true,
     "reportingOnly": false,
     "fallbackProvider": "torus",
-    "liteProvider": "torus",
-    "primaryProvider": "wallet"
+    "primaryProvider": "wallet",
+    "marketCreationEnabled": false,
+    "reportingEnabled": false
+  },
+  "paraDeploys": {
+    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2": {
+      "name": "WETH",
+      "decimals": 18,
+      "uploadBlockNumber": 11147047,
+      "addresses": {
+        "Augur": "0xf5d109970124dda6f7c95aA3506Aa3eC866007Fd",
+        "AugurTrading": "0x0752b1441216f7d246d90d0C4ed020e819578dE6",
+        "Universe": "0xC455058585374fc3b0aEc3A383109038289BC3ED",
+        "Cash": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "ShareToken": "0xeA197b483Eaa80BDF152b4e8413a74BdF937488F",
+        "OICash": "0xD92a2A0343db348Fb754B2513a26d2e007715F79",
+        "CancelOrder": "0xB38BaA88D1bBCb86DD8d7cfb519db88f659F36cC",
+        "CreateOrder": "0x90DcD09a220D13D77cd7c4366050E777008FaDa4",
+        "FillOrder": "0x4d2d502Fd668D27B3e27791ff3f2294C3A37a73A",
+        "Orders": "0xF7EB3825D257b24ad4b6d3f8f8B99c38C3c3568b",
+        "Trade": "0xAc179C31B1c0b8F7C361813D10b733FaE0B5Ae63",
+        "SimulateTrade": "0x68D96d727Ba68f49CdB95b88fd7E675722C70C49",
+        "ZeroXTrade": "0xcDF0c39a72BeEA2e981E825A9bf4A0531Ee486D6",
+        "ProfitLoss": "0xE74776850a982f3135102bea41e0c0C37553951A"
+      }
+    }
   }
 }

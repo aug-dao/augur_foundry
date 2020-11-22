@@ -15,9 +15,9 @@ import metaMaskStore from "./components/metaMask";
 import { BN, constants } from "@openzeppelin/test-helpers";
 import NumberFormat from "react-number-format";
 
-import markets from "./configs/markets/markets-local.json";
+import markets from "./configs/markets/markets-kovan.json";
 import contracts from "./configs/contracts.json";
-import environment from "./configs/environments/environment-local.json";
+import environment from "./configs/environments/environment-kovan.json";
 
 import { notification } from "antd";
 import "antd/dist/antd.css";
@@ -110,9 +110,13 @@ export default class App extends PureComponent {
 
     const OUTCOMES = { INVALID: 0, NO: 1, YES: 2 };
 
+    // const cash = new web3.eth.Contract(
+    //   contracts.contracts["Cash.sol"].Cash.abi,
+    //   environment.addresses.Cash
+    // );
     const cash = new web3.eth.Contract(
-      contracts.contracts["Cash.sol"].Cash.abi,
-      environment.addresses.Cash
+      contracts.contracts["0x/erc20/contracts/src/WETH9.sol"].WETH9.abi,
+      environment.addresses.WETH9
     );
     const erc20 = new web3.eth.Contract(
       contracts.contracts["Cash.sol"].Cash.abi
@@ -120,7 +124,7 @@ export default class App extends PureComponent {
 
     const shareToken = new web3.eth.Contract(
       contracts.contracts["reporting/ShareToken.sol"].ShareToken.abi,
-      environment.addresses.ShareToken
+      environment.paraDeploys[cash.options.address].addresses.ShareToken
     );
 
     const market = new web3.eth.Contract(
@@ -134,12 +138,12 @@ export default class App extends PureComponent {
 
     const universe = new web3.eth.Contract(
       contracts.contracts["reporting/Universe.sol"].Universe.abi,
-      environment.addresses.Universe
+      environment.paraDeploys[cash.options.address].addresses.Universe
     );
 
     const augur = new web3.eth.Contract(
       contracts.contracts["Augur.sol"].Augur.abi,
-      environment.addresses.Augur
+      environment.paraDeploys[cash.options.address].addresses.Augur
     );
     const erc20Wrapper = new web3.eth.Contract(
       contracts.contracts["ERC20Wrapper.sol"].ERC20Wrapper.abi
@@ -248,9 +252,10 @@ export default class App extends PureComponent {
 
       let decimals = new BN(15);
       let multiplier = new BN(3);
-      if (chainId == 42) {
-        multiplier = new BN(2);
-      }
+      //need to make this dynamic by reading numticks from the augur contracts
+      // if (chainId == 42) {
+      //   multiplier = new BN(2);
+      // }
       wrappedBalances.invalidTokenBalance = wrappedBalances.invalidTokenBalance.mul(
         new BN(10).pow(multiplier)
       );
@@ -363,7 +368,7 @@ export default class App extends PureComponent {
                         this.claimWinningsWhenWrapped(markets[x].address)
                       }
                     >
-                      REDEEM DAI
+                      REDEEM ETH
                     </Button>
                   </span>
                 ) : isMoreThanZeroShares && isMoreThanZeroERC20s ? (
@@ -402,7 +407,7 @@ export default class App extends PureComponent {
                       type="submit"
                       onClick={(e) => this.redeemDAI(markets[x].address)}
                     >
-                      REDEEM DAI
+                      REDEEM ETH
                     </Button>
                   </span>
                 ) : isMoreThanZeroERC20s ? (
@@ -436,7 +441,7 @@ export default class App extends PureComponent {
                       type="submit"
                       onClick={(e) => this.redeemDAI(markets[x].address, true)}
                     >
-                      REDEEM DAI
+                      REDEEM ETH
                     </Button>
                   </span>
                 )
@@ -509,10 +514,10 @@ export default class App extends PureComponent {
     e.preventDefault();
     const { web3, accounts } = this.state.web3Provider;
 
-    const { cash, shareToken, market, augur } = this.state;
+    const { cash, shareToken, market, augur, augurFoundry } = this.state;
 
     const marketAddress = e.target.elements.marketIds.value;
-    //Here the amount is the amoun of DAI users wants to spend to buy shares
+    //Here the amount is the amoun of ETH users wants to spend to buy shares
     let amount = e.target.elements.amount.value;
 
     // const daiBalance = await daiInstance.methods.balanceOf(accounts[0]).call();
@@ -522,123 +527,163 @@ export default class App extends PureComponent {
       let weiAmount = web3.utils.toWei(amount);
       weiAmount = new BN(weiAmount);
       market.options.address = marketAddress;
-      let balance = new BN(await cash.methods.balanceOf(accounts[0]).call());
+      // let balance = new BN(await cash.methods.balanceOf(accounts[0]).call());
+      let balance = new BN(await web3.eth.getBalance(accounts[0]));
       let numTicks = new BN(await market.methods.getNumTicks().call());
       console.log("numTicks: " + numTicks);
 
       let amountOfShareToBuy = weiAmount.div(numTicks);
       // console.log(web3.utils.fromWei(amountOfShareToBuy));
 
-      //user is inouting how much DAI they want to spend
+      // //user is inouting how much ETH they want to spend
+      // //They should have more than they want to spend
+      // if (weiAmount.cmp(balance) == 1) {
+      //   //weiAmount > balance
+      //   //await Promise.reject(new Error("Not Enough balance to buy complete sets"));
+      //   this.openNotification("error", "Not Enough ETH Balance", "");
+      //   return;
+      // }
+
+      //user is inouting how much ETH they want to spend
       //They should have more than they want to spend
       if (weiAmount.cmp(balance) == 1) {
         //weiAmount > balance
         //await Promise.reject(new Error("Not Enough balance to buy complete sets"));
-        this.openNotification("error", "Not Enough DAI Balance", "");
+        this.openNotification("error", "Not Enough ETH Balance", "");
         return;
       }
 
-      let allowance = new BN(
-        await cash.methods.allowance(accounts[0], augur.options.address).call()
-      );
+      // let allowance = new BN(
+      //   await cash.methods.allowance(accounts[0], augur.options.address).call()
+      // );
 
-      if (weiAmount.cmp(allowance) == 1) {
-        console.log("allowance");
-        this.openNotification(
-          "info",
-          "Approve your DAI to before minting new shares",
-          "This is one time transaction"
-        );
-        cash.methods
-          .approve(augur.options.address, constants.MAX_UINT256.toString())
-          .send({ from: accounts[0] })
-          .on("receipt", (receipt) => {
-            console.log("Before buy complete sets");
+      // if (weiAmount.cmp(allowance) == 1) {
+      //   console.log("allowance");
+      //   this.openNotification(
+      //     "info",
+      //     "Approve your ETH to before minting new shares",
+      //     "This is one time transaction"
+      //   );
+      //   cash.methods
+      //     .approve(augur.options.address, constants.MAX_UINT256.toString())
+      //     .send({ from: accounts[0] })
+      //     .on("receipt", (receipt) => {
+      //       console.log("Before buy complete sets");
+      //       this.openNotification(
+      //         "info",
+      //         "Approval Successfull",
+      //         "Now we can mint shares for you"
+      //       );
+      //       this.openNotification("info", "Minting shares", "");
+      //       shareToken.methods
+      //         .buyCompleteSets(
+      //           marketAddress,
+      //           accounts[0],
+      //           amountOfShareToBuy.toString()
+      //         )
+      //         .send({ from: accounts[0] })
+      //         .on("receipt", (receipt) => {
+      //           this.openNotification(
+      //             "success",
+      //             "Shares minted successfully",
+      //             ""
+      //           );
+      //           this.initData();
+      //         })
+      //         .on("error", (error) => {
+      //           if (
+      //             error.message.includes("User denied transaction signature")
+      //           ) {
+      //             this.openNotification(
+      //               "error",
+      //               "User denied signature",
+      //               "sign the transaction to be able to execute the transaction"
+      //             );
+      //           } else {
+      //             this.openNotification(
+      //               "error",
+      //               "There was an error in executing the transaction",
+      //               ""
+      //             );
+      //           }
+      //         });
+      //     })
+      //     .on("error", (error) => {
+      //       if (error.message.includes("User denied transaction signature")) {
+      //         this.openNotification(
+      //           "error",
+      //           "User denied signature",
+      //           "sign the transaction to be able to execute the transaction"
+      //         );
+      //       } else {
+      //         this.openNotification(
+      //           "error",
+      //           "There was an error in executing the transaction",
+      //           ""
+      //         );
+      //       }
+      //     });
+      // } else {
+      //   this.openNotification("info", "Minting shares", "");
+      //   // console.log(marketAddress);
+      //   //buy the complete sets
+      //   shareToken.methods
+      //     .buyCompleteSets(
+      //       marketAddress,
+      //       accounts[0],
+      //       amountOfShareToBuy.toString()
+      //     )
+      //     .send({ from: accounts[0] })
+      //     .on("receipt", (receipt) => {
+      //       this.openNotification("success", "Shares minted successfully", "");
+      //       this.initData();
+      //     })
+      //     .on("error", (error) => {
+      //       if (error.message.includes("User denied transaction signature")) {
+      //         this.openNotification(
+      //           "error",
+      //           "User denied signature",
+      //           "sign the transaction to be able to execute the transaction"
+      //         );
+      //       } else {
+      //         this.openNotification(
+      //           "error",
+      //           "There was an error in executing the transaction",
+      //           ""
+      //         );
+      //       }
+      //     });
+
+      // }
+      this.openNotification("info", "Minting shares", "");
+      // console.log(marketAddress);
+      //buy the complete sets
+      augurFoundry.methods
+        .buyCompleteSets(
+          marketAddress,
+          accounts[0],
+          amountOfShareToBuy.toString()
+        )
+        .send({ from: accounts[0], value: weiAmount })
+        .on("receipt", (receipt) => {
+          this.openNotification("success", "Shares minted successfully", "");
+          this.initData();
+        })
+        .on("error", (error) => {
+          if (error.message.includes("User denied transaction signature")) {
             this.openNotification(
-              "info",
-              "Approval Successfull",
-              "Now we can mint shares for you"
+              "error",
+              "User denied signature",
+              "sign the transaction to be able to execute the transaction"
             );
-            this.openNotification("info", "Minting shares", "");
-            shareToken.methods
-              .buyCompleteSets(
-                marketAddress,
-                accounts[0],
-                amountOfShareToBuy.toString()
-              )
-              .send({ from: accounts[0] })
-              .on("receipt", (receipt) => {
-                this.openNotification(
-                  "success",
-                  "Shares minted successfully",
-                  ""
-                );
-                this.initData();
-              })
-              .on("error", (error) => {
-                if (
-                  error.message.includes("User denied transaction signature")
-                ) {
-                  this.openNotification(
-                    "error",
-                    "User denied signature",
-                    "sign the transaction to be able to execute the transaction"
-                  );
-                } else {
-                  this.openNotification(
-                    "error",
-                    "There was an error in executing the transaction",
-                    ""
-                  );
-                }
-              });
-          })
-          .on("error", (error) => {
-            if (error.message.includes("User denied transaction signature")) {
-              this.openNotification(
-                "error",
-                "User denied signature",
-                "sign the transaction to be able to execute the transaction"
-              );
-            } else {
-              this.openNotification(
-                "error",
-                "There was an error in executing the transaction",
-                ""
-              );
-            }
-          });
-      } else {
-        this.openNotification("info", "Minting shares", "");
-        // console.log(marketAddress);
-        //buy the complete sets
-        shareToken.methods
-          .buyCompleteSets(
-            marketAddress,
-            accounts[0],
-            amountOfShareToBuy.toString()
-          )
-          .send({ from: accounts[0] })
-          .on("receipt", (receipt) => {
-            this.openNotification("success", "Shares minted successfully", "");
-            this.initData();
-          })
-          .on("error", (error) => {
-            if (error.message.includes("User denied transaction signature")) {
-              this.openNotification(
-                "error",
-                "User denied signature",
-                "sign the transaction to be able to execute the transaction"
-              );
-            } else {
-              this.openNotification(
-                "error",
-                "There was an error in executing the transaction",
-                ""
-              );
-            }
-          });
-      }
+          } else {
+            this.openNotification(
+              "error",
+              "There was an error in executing the transaction",
+              ""
+            );
+          }
+        });
     } else {
       this.openNotification("error", "Select a Market and Enter   amount", "");
     }
@@ -660,7 +705,7 @@ export default class App extends PureComponent {
       let isApprovedForAllToAugurFoundry = await shareToken.methods
         .isApprovedForAll(accounts[0], augurFoundry.options.address)
         .call();
-
+      console.log(augurFoundry.options.address);
       let tokenIds = [];
       let amounts = [];
 
@@ -771,7 +816,7 @@ export default class App extends PureComponent {
       if (isMarketFinalized) {
         console.log("claiming trading proceeds");
         //last arg is for fingerprint that has something to do with affiliate fees(NOTE: what exactly?)
-        this.openNotification("info", "Redeeming DAI on winning shares", " ");
+        this.openNotification("info", "Redeeming ETH on winning shares", " ");
         //Add a check that user has the complete shares
         //i.e. balanceofShareTOken for YES/NO/INVALID should be greater then zero
 
@@ -783,7 +828,7 @@ export default class App extends PureComponent {
           )
           .send({ from: accounts[0] })
           .on("receipt", (receipt) => {
-            this.openNotification("success", "DAI redeemed successfully", "");
+            this.openNotification("success", "ETH redeemed successfully", "");
             this.initData();
           })
           .on("error", (error) => {
@@ -839,27 +884,62 @@ export default class App extends PureComponent {
           this.openNotification(
             "error",
             "Not enough Balance",
-            "You need shares of every outcome(YES/NO/INVALID) to be able to redeem DAI"
+            "You need shares of every outcome(YES/NO/INVALID) to be able to redeem ETH"
           );
           return;
         }
 
         this.openNotification(
           "info",
-          "Redeeming DAI by selling your shares",
+          "Redeeming ETH by selling your shares",
           ""
         );
-        shareToken.methods
+        let isApprovedForAllToAugurFoundry = await shareToken.methods
+          .isApprovedForAll(accounts[0], augurFoundry.options.address)
+          .call();
+
+        if (!isApprovedForAllToAugurFoundry) {
+          this.openNotification(
+            "info",
+            "Approve your share tokens to be able to wrap shares",
+            ""
+          );
+          await shareToken.methods
+            .setApprovalForAll(augurFoundry.options.address, true)
+            .send({ from: accounts[0] })
+            .on("receipt", (receipt) => {
+              this.openNotification(
+                "info",
+                "Approval successful",
+                "Now we can wrap shares"
+              );
+            })
+            .on("error", (error) => {
+              if (error.message.includes("User denied transaction signature")) {
+                this.openNotification(
+                  "error",
+                  "User denied signature",
+                  "sign the transaction to be able to execute the transaction"
+                );
+              } else {
+                this.openNotification(
+                  "error",
+                  "There was an error in executing the transaction",
+                  ""
+                );
+              }
+            });
+        }
+        await augurFoundry.methods
           .sellCompleteSets(
             marketAddress,
-            accounts[0],
             accounts[0],
             amount.toString(),
             web3.utils.fromAscii("")
           )
           .send({ from: accounts[0] })
           .on("receipt", (receipt) => {
-            this.openNotification("success", "DAI redeemed successfully", "");
+            this.openNotification("success", "ETH redeemed successfully", "");
             this.initData();
           })
           .on("error", (error) => {
@@ -922,14 +1002,14 @@ export default class App extends PureComponent {
             .wrappers(tokenIds[i])
             .call();
           //no claim for the user
-          // if(winningOutcome balance is zero then redeem DAI by selling ERC1155s)
+          // if(winningOutcome balance is zero then redeem ETH by selling ERC1155s)
           let balanceOfWinningOutcomeWrapped = await this.getBalanceOfERC20(
             erc20Wrapper.options.address,
             accounts[0]
           );
           // console.log(balanceOfWinningOutcomeWrapped.toString());
           if (balanceOfWinningOutcomeWrapped.cmp(new BN(0)) == 0) {
-            console.log("redeem DAI called");
+            console.log("redeem ETH called");
             let shareTokenBalances = await this.getYesNoBalancesMarketShareToken(
               marketAddress
             );
@@ -945,14 +1025,14 @@ export default class App extends PureComponent {
 
             //try to sell by calling the shareToken method directly
           } else {
-            console.log("redeem not DAI called");
+            console.log("redeem not ETH called");
             erc20Wrapper.methods
               .claim(accounts[0])
               .send({ from: accounts[0] })
               .on("receipt", (receipt) => {
                 this.openNotification(
                   "success",
-                  "DAI redeemed successfully",
+                  "ETH redeemed successfully",
                   ""
                 );
                 this.initData();
@@ -1288,9 +1368,9 @@ export default class App extends PureComponent {
 
     let multiplier = new BN(3);
     let chainId = await web3.eth.net.getId();
-    if (chainId == 42) {
-      multiplier = new BN(2);
-    }
+    // if (chainId == 42) {
+    //   multiplier = new BN(2);
+    // }
     yesAmount = new BN(web3.utils.toWei(yesAmount));
     yesAmount = yesAmount.div(new BN(10).pow(multiplier));
 
@@ -1416,7 +1496,7 @@ export default class App extends PureComponent {
                         <Form.Control
                           type="text"
                           name="amount"
-                          placeholder="Amount of DAI"
+                          placeholder="Amount of ETH"
                         />
                       </Form.Group>
                     </Col>
