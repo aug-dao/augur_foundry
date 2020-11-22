@@ -15,9 +15,9 @@ import metaMaskStore from "./components/metaMask";
 import { BN, constants } from "@openzeppelin/test-helpers";
 import NumberFormat from "react-number-format";
 
-import markets from "./configs/markets/markets-mainnet.json";
+import markets from "./configs/markets/markets-local.json";
 import contracts from "./configs/contracts.json";
-import environment from "./configs/environments/environment-mainnet.json";
+import environment from "./configs/environments/environment-local.json";
 
 import { notification } from "antd";
 import "antd/dist/antd.css";
@@ -99,14 +99,14 @@ export default class App extends PureComponent {
     let chainId = await web3.eth.net.getId();
     console.log("chainId: " + chainId);
 
-    if (chainId !== 1) {
-      this.openNotification(
-        "error",
-        "Wrong Network",
-        "Please connect to Ethereum mainnet"
-      );
-      return;
-    }
+    // if (chainId !== 1) {
+    //   this.openNotification(
+    //     "error",
+    //     "Wrong Network",
+    //     "Please connect to Ethereum mainet"
+    //   );
+    //   return;
+    // }
 
     const OUTCOMES = { INVALID: 0, NO: 1, YES: 2 };
 

@@ -4,6 +4,7 @@
   "logLevel": 3,
   "averageBlocktime": 2000,
   "ethereum": {
+    "network": "private",
     "http": "http://localhost:8545",
     "ws": "ws://localhost:8546",
     "rpcRetryCount": 5,
@@ -18,7 +19,7 @@
   "deploy": {
     "isProduction": false,
     "enableFaucets": true,
-    "normalTime": false,
+    "normalTime": true,
     "writeArtifacts": true,
     "serial": true,
     "externalAddresses": {}
@@ -28,7 +29,7 @@
     "autoReport": false,
     "ipfsEndpoint": {
       "version": 1,
-      "url": "https://cloudflare-ipfs.com/ipfs/"
+      "url": "https://cloudflare-ipfs.com/"
     }
   },
   "uniswap": {
@@ -71,7 +72,9 @@
     "trackMarketInvalidBids": true,
     "fallbackProvider": "torus",
     "liteProvider": "jsonrpc",
-    "primaryProvider": "wallet"
+    "primaryProvider": "wallet",
+    "marketCreationEnabled": true,
+    "reportingEnabled": true
   },
   "addresses": {
     "Augur": "0x25Ff5dc79A7c4e34254ff0f4a19d69E491201DD3",
@@ -80,11 +83,11 @@
     "Cash": "0x021076fB9adafcf83869435F9d72A5873869B4ad",
     "USDC": "0x9dA930a2ca12C197e687DB22dB3fA318FD8AA60a",
     "USDT": "0xf33A8Abcf994BAFCb28682f08c48015A57EA35d3",
-    "BuyParticipationTokens": "0x948FE39685DF87B87004a37DcB92Bd18c6D70a5e",
+    "BuyParticipationTokens": "0xeCAaCA82cDF97f53f478609a98C3d36A5F0ef955",
     "RedeemStake": "0xB4D7f6747CEFbDcA11bDDd92a16134dc95B0DD9B",
     "WarpSync": "0x0D676967088088546837acCF52a72BBD5066FFEE",
     "ShareToken": "0xE60c9fe85aEE7B4848a97271dA8c86323CdFb897",
-    "HotLoading": "0x575F3c652894360F4b7655379EA1eae53381e012",
+    "HotLoading": "0x5F3105cc774a5593b5e678B8536FC92DB4dCD4A2",
     "Affiliates": "0x635C8EF61A07dfe49b683D1A34da3547b0d6705E",
     "AffiliateValidator": "0x905419e7A1f96A973AB8988Ba19C84135C6f7122",
     "OICash": "0x788c38264635B3782D6eCd309c022C6Ae603b9d2",
@@ -93,9 +96,10 @@
     "UniswapV2Factory": "0xB15d4981B977706DcD7350075A12354f2F18f6BC",
     "UniswapV2Router02": "0xDCA9bef5199984ECe425aBe150f50b46fE9cF397",
     "RelayHubV2": "0x6Ec11F087a874d491e6C051ff829E0fB61bd950A",
-    "EthExchange": "0x780219783B532c837f83AD633579Bdbcb39441B7",
-    "AuditFunds": "0xeCAaCA82cDF97f53f478609a98C3d36A5F0ef955",
-    "AccountLoader": "0xB78B2B637d3861E601E54C00c054972c18A5e991",
+    "EthExchange": "0x27c403e68d4B45D57eCbC1877940E7ad36c38e29",
+    "AuditFunds": "0xB78B2B637d3861E601E54C00c054972c18A5e991",
+    "AccountLoader": "0x3d3A4642EeFC4fAEE11F2576391e6FbBc49431F1",
+    "HotLoadingUniversal": "0x575F3c652894360F4b7655379EA1eae53381e012",
     "ERC20Proxy": "0xf28fc4b34a7c4534dD3E40e0ad5Df6F2cb69Aec0",
     "ERC721Proxy": "0x850212e53c1d8898740dd776E78C77B87D94F234",
     "ERC1155Proxy": "0x15152AaDcA3C571B0Ba332e1020FCeA43F95A3F9",
@@ -107,7 +111,8 @@
     "DevUtils": "0xA00A7F098dde7e5FFB66C30305E287A6E86CA499",
     "WETH9": "0xdFeF677BF5f66f3EEFf481A587c04CB58e95b92a",
     "ZRXToken": "0x67a75EBbcd5B6Fd8217D3F856D10F4F6b517a272",
-    "TimeControlled": "0x7a8f8e48D4CC990BBD8E088FB027e850486e8e0C",
+    "Time": "0x7a8f8e48D4CC990BBD8E088FB027e850486e8e0C",
+    "AMMFactory": "0xa2ef337469De832a64c7906d41799F94CCF23CD9",
     "AugurTrading": "0xaf517E20601Df8d8584035EB895C02713bC1f3A4",
     "CancelOrder": "0x92AF28244b4f60BAe4A299F75FF6d2f738E398B2",
     "CreateOrder": "0xD65f9c350eD35e8339a228fF27Efd2d9BBA17C0b",
@@ -116,6 +121,9 @@
     "ProfitLoss": "0x658655115E55fa3433B9686865f011874BD71083",
     "SimulateTrade": "0x642e1eaeD86d4075253c34c307D34362d2247D18",
     "Trade": "0x6749E370e7B1955FFa924F4f75f5F12653C7512C",
-    "ZeroXTrade": "0x6cfC125DF7Ba27B26138CdBCd5804137dC3BA1A6"
+    "ZeroXTrade": "0x6cfC125DF7Ba27B26138CdBCd5804137dC3BA1A6",
+    "ERC20Proxy1155Nexus": "0x9a32A8c4c0a3b3203206c61d360B9B8Cdaa0F169",
+    "ParaDeployer": "0x4282Ccb6Fe13Ce3159147E1F9B241632860f6280",
+    "OINexus": "0x49159e6A7EC1Af5E12A082C11d950a25E0186490"
   }
 }

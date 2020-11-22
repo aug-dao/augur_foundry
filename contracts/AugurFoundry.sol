@@ -1,6 +1,8 @@
 pragma solidity ^0.6.2;
 import "./ERC20Wrapper.sol";
+import "./IWETH.sol";
 import "./IShareToken.sol";
+
 pragma experimental ABIEncoderV2;
 
 /**
@@ -11,19 +13,30 @@ pragma experimental ABIEncoderV2;
  */
 contract AugurFoundry {
     IShareToken public shareToken;
-    IERC20 public cash;
+    IWETH public wETH;
+    address public augur;
 
-    mapping(uint256 => address) public wrappers;
+    mapping(uint256 => address payable) public wrappers;
 
     event WrapperCreated(uint256 indexed tokenId, address tokenAddress);
 
-    /**@dev sets value for {shareToken} and {cash}
+    /**@dev sets value for {shareToken} and {wETH}
      * @param _shareToken address of shareToken associated with a augur universe
-     *@param _cash DAI
+     *@param _wETH DAI
      */
-    constructor(IShareToken _shareToken, IERC20 _cash) public {
-        cash = _cash;
+    constructor(
+        IShareToken _shareToken,
+        IWETH _wETH,
+        address _augur
+    ) public {
+        wETH = _wETH;
         shareToken = _shareToken;
+        augur = _augur;
+        _wETH.approve(_augur, uint256(-1));
+    }
+
+    function approveWrappedETHtoAugur() external {
+        wETH.approve(address(augur), uint256(-1));
     }
 
     /**@dev creates new ERC20 wrappers for a outcome of a market
@@ -42,7 +55,7 @@ contract AugurFoundry {
         ERC20Wrapper erc20Wrapper = new ERC20Wrapper(
             address(this),
             shareToken,
-            cash,
+            wETH,
             _tokenId,
             _name,
             _symbol,
@@ -125,5 +138,42 @@ contract AugurFoundry {
         for (uint256 i = 0; i < _tokenIds.length; i++) {
             unWrapTokens(_tokenIds[i], _amounts[i]);
         }
+    }
+
+    //helper functions for para augur
+
+    //mint complete sets
+    //Make sure that msg.value = _amount * numTicks of the market
+    function buyCompleteSets(
+        address _market,
+        address _account,
+        uint256 _amount
+    ) external payable returns (bool) {
+        wETH.deposit{value: msg.value}();
+        return shareToken.buyCompleteSets(_market, _account, _amount);
+    }
+
+    //sell complete sets
+    //msg.sender needs to have given setApprovalForAll to this account
+    function sellCompleteSets(
+        address _market,
+        address _recipient,
+        uint256 _amount,
+        bytes32 _fingerprint
+    ) external returns (uint256 _creatorFee, uint256 _reportingFee) {
+        shareToken.sellCompleteSets(
+            _market,
+            msg.sender,
+            _recipient,
+            _amount,
+            _fingerprint
+        );
+        uint256 wETHBalance = wETH.balanceOf(address(this));
+        wETH.withdraw(wETHBalance);
+        TransferHelper.safeTransferETH(msg.sender, wETHBalance);
+    }
+
+    receive() external payable {
+        assert(msg.sender == address(wETH)); // only accept ETH via fallback from the WETH contract
     }
 }

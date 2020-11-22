@@ -3,18 +3,24 @@ const {
   constants,
   expectEvent,
   expectRevert,
+  balance,
 } = require("@openzeppelin/test-helpers");
 const { expect } = require("chai");
 const { MAX_INT256 } = require("@openzeppelin/test-helpers/src/constants");
 const { ZERO_ADDRESS } = constants;
 
 const MockShareToken = artifacts.require("MockShareToken");
-const MockCash = artifacts.require("MockCash");
+const WETH9 = artifacts.require("WETH9");
 const ERC20Wrapper = artifacts.require("ERC20Wrapper");
 const AugurFoundry = artifacts.require("AugurFoundry");
 
 contract("ERC20Wrapper", function (accounts) {
-  const [initialHolder, otherAccount, anotherAccount] = accounts;
+  const [
+    initialHolder,
+    otherAccount,
+    anotherAccount,
+    augurPlaceHolder,
+  ] = accounts;
   var tokenId;
   const decimals = 18;
   const uri = "";
@@ -22,16 +28,17 @@ contract("ERC20Wrapper", function (accounts) {
   const symbol = "TST";
   const initialSupply = new BN(1000).mul(new BN(10).pow(new BN(18))); //1000 ether
   beforeEach(async function () {
-    this.mockCash = await MockCash.new();
+    this.wETH = await WETH9.new();
     //create a new MockShareToken
-    this.mockShareToken = await MockShareToken.new(uri, this.mockCash.address);
+    this.mockShareToken = await MockShareToken.new(uri, this.wETH.address);
     tokenId = await this.mockShareToken.tokenId();
 
     //deploy the augur foundry contract
     //We should deploy a mock augur foundry instead if we want to do the unit tests
     this.augurFoundry = await AugurFoundry.new(
       this.mockShareToken.address,
-      this.mockCash.address
+      this.wETH.address,
+      augurPlaceHolder
     );
 
     //Create a new erc20 wrapper for a tokenId of the shareTOken
@@ -149,11 +156,12 @@ contract("ERC20Wrapper", function (accounts) {
       });
     });
   });
-  describe("Should calim winnings", async function () {
+  describe("Should claim winnings", async function () {
     var cashAmount;
     let tokenHolders = [initialHolder, otherAccount, anotherAccount];
+    let ethTrackers = [];
     beforeEach(async function () {
-      cashAmount = await this.mockShareToken.amount();
+      cashAmount = new BN(await this.mockShareToken.amount());
 
       for (i in tokenHolders) {
         await this.mockShareToken.mint(tokenHolders[i], tokenId, initialSupply);
@@ -172,7 +180,19 @@ contract("ERC20Wrapper", function (accounts) {
             from: tokenHolders[i],
           }
         );
+
+        let ethTracker = await balance.tracker(tokenHolders[i]);
+        ethTrackers.push(ethTracker);
       }
+      //send weth to sharetoken contract
+      //This is becuse it is a mock shareToken contract
+      await this.wETH.deposit({
+        from: accounts[4],
+        value: cashAmount,
+      });
+      await this.wETH.transfer(this.mockShareToken.address, cashAmount, {
+        from: accounts[4],
+      });
     });
     it("when the outcome is the winning outcome", async function () {
       for (i in tokenHolders) {
@@ -182,13 +202,19 @@ contract("ERC20Wrapper", function (accounts) {
         expect(
           await this.erc20Wrapper.balanceOf(tokenHolders[i])
         ).to.be.bignumber.equal("0");
+
         //Not exaclt div by three becuse there is an error of 10^-18 magnitude
-        expect(
-          await this.mockCash.balanceOf(tokenHolders[i])
-        ).to.be.bignumber.at.least(cashAmount.div(new BN(tokenHolders.length)));
+        // check the difference in eth balance
+        expect(await ethTrackers[i].delta()).to.be.bignumber.at.least(
+          "330000000000000000"
+        );
       }
+      expect(
+        await balance.current(this.erc20Wrapper.address)
+      ).to.be.bignumber.equal("0");
     });
     it("when someone else claims for them", async function () {
+      let ethTracker = await balance.tracker(initialHolder);
       await expectRevert(
         this.erc20Wrapper.claim(initialHolder, {
           from: otherAccount,
@@ -205,15 +231,18 @@ contract("ERC20Wrapper", function (accounts) {
         await this.erc20Wrapper.balanceOf(initialHolder)
       ).to.be.bignumber.equal("0");
       //Not exaclt div by three becuse there is an error of 10^-18 magnitude
+      expect(await ethTracker.delta()).to.be.bignumber.at.least(
+        "330000000000000000"
+      );
       expect(
-        await this.mockCash.balanceOf(initialHolder)
-      ).to.be.bignumber.at.least(cashAmount.div(new BN(tokenHolders.length)));
+        await balance.current(this.erc20Wrapper.address)
+      ).to.be.bignumber.equal("666666666666666667");
     });
   });
 });
 
 contract("AugurFoundry", function (accounts) {
-  const [initialHolder, mockCashAddress] = accounts;
+  const [initialHolder, augurPlaceHolder] = accounts;
   const tokenIds = [1, 2];
   const decimals = [18, 18];
   const uri = "";
@@ -223,12 +252,14 @@ contract("AugurFoundry", function (accounts) {
   beforeEach(async function () {
     //create a new MockShareToken
     this.mockShareToken = await MockShareToken.new(uri, ZERO_ADDRESS);
+    this.wETH = await WETH9.new();
 
     //deploy the augur foundry contract
     //We should deploy a mock augur foundry instead if we want to do the unit tests
     this.augurFoundry = await AugurFoundry.new(
       this.mockShareToken.address,
-      mockCashAddress
+      this.wETH.address,
+      augurPlaceHolder
     );
 
     //mint initialHolder some ERC1155 of tokenId

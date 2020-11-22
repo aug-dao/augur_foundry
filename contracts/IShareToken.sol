@@ -18,4 +18,18 @@ interface IShareToken is IERC1155 {
         external
         view
         returns (address _marketAddress);
+
+    function buyCompleteSets(
+        address _market,
+        address _account,
+        uint256 _amount
+    ) external returns (bool);
+
+    function sellCompleteSets(
+        address _market,
+        address _holder,
+        address _recipient,
+        uint256 _amount,
+        bytes32 _fingerprint
+    ) external returns (uint256 _creatorFee, uint256 _reportingFee);
 }

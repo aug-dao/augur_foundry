@@ -8,11 +8,12 @@ const { expect } = require("chai");
 const { ZERO_ADDRESS } = constants;
 
 const MockShareToken = artifacts.require("MockShareToken");
+const WETH9 = artifacts.require("WETH9");
 const ERC20Wrapper = artifacts.require("ERC20Wrapper");
 const AugurFoundry = artifacts.require("AugurFoundry");
 
 contract("Wrapper Behaves Like an ERC20", function (accounts) {
-  const [initialHolder, recipient, anotherAccount] = accounts;
+  const [initialHolder, recipient, anotherAccount, augurPlaceHolder] = accounts;
   const tokenId = 1;
   const decimals = 16;
   const uri = "";
@@ -23,12 +24,14 @@ contract("Wrapper Behaves Like an ERC20", function (accounts) {
   beforeEach(async function () {
     //create a new MockShareToken
     this.mockShareToken = await MockShareToken.new(uri, ZERO_ADDRESS);
+    this.wETH = await WETH9.new();
 
     //deploy the augur foundry contract
     //We should deploy a mock augur foundry instead if we want to do the unit tests
     this.augurFoundry = await AugurFoundry.new(
       this.mockShareToken.address,
-      ZERO_ADDRESS
+      this.wETH.address,
+      augurPlaceHolder
     ); //no need to add cash address to test this functionalities
 
     //Create a new erc20 wrapper for a tokenId of the shareTOken

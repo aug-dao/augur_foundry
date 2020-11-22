@@ -6,12 +6,12 @@ Set up augur locally
 
 1. git clone https://github.com/AugurProject/augur
 2. git checkout v2
-3. change [this](https://github.com/AugurProject/augur/blob/v2/packages/augur-utils/src/configuration.ts#L219) parameter to false(we need this to controll time)
+3. change [this](https://github.com/AugurProject/augur/blob/v2/packages/augur-utils/src/configuration.ts#L219) parameter to false(we need this to control time)
 4. yarn
 5. yarn build
 6. cd augur/packages/augur-core
 7. docker run -it -p 8545:8545 -p 8546:8546 augurproject/dev-node-geth:v1.9.9
-8. yarn deploy:local
+8. yarn deploy:para:contracts:local
 
 Clone the repository
 

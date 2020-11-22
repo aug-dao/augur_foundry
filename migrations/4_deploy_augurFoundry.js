@@ -8,6 +8,7 @@ const { BN, constants } = require("@openzeppelin/test-helpers");
 const contracts = require("../contracts.json").contracts;
 const addresses = require("../environments/environment-local.json").addresses;
 const markets = require("../markets/markets-local.json");
+const { shareToken } = require("../scripts/utils");
 
 // const timeControlled = new web3.eth.Contract(
 //   contracts["TimeControlled.sol"].TimeControlled.abi,
@@ -17,20 +18,15 @@ const markets = require("../markets/markets-local.json");
 const erc20 = new web3.eth.Contract(contracts["Cash.sol"].Cash.abi);
 const repToken = erc20;
 //This is the DAI token
-const cash = new web3.eth.Contract(
-  contracts["Cash.sol"].Cash.abi,
-  addresses.Cash
+const wETH = new web3.eth.Contract(
+  contracts["0x/erc20/contracts/src/WETH9.sol"].WETH9.abi,
+  addresses.WETH9
 );
-const shareToken = new web3.eth.Contract(
-  contracts["reporting/ShareToken.sol"].ShareToken.abi,
-  addresses.ShareToken
+const paraDeployer = new web3.eth.Contract(
+  contracts["para/ParaDeployer.sol"].ParaDeployer.abi,
+  addresses.ParaDeployer
 );
-const market = new web3.eth.Contract(
-  contracts["reporting/Market.sol"].Market.abi
-);
-const disputeWindow = new web3.eth.Contract(
-  contracts["reporting/DisputeWindow.sol"].DisputeWindow.abi
-);
+const augur = new web3.eth.Contract(contracts["Augur.sol"].Augur.abi);
 
 const with18Decimals = function (amount) {
   return amount.mul(new BN(10).pow(new BN(18)));
@@ -56,6 +52,9 @@ const getNumTicks = async function (marketAddress) {
   market.options.address = marketAddress;
   return new BN(await market.methods.getNumTicks().call());
 };
+const getBytes32FromString = function (someString) {
+  return web3.utils.fromAscii(someString);
+};
 ///Deploy Augur Foundry
 const ERC20Wrapper = artifacts.require("ERC20Wrapper");
 const AugurFoundry = artifacts.require("AugurFoundry");
@@ -69,11 +68,20 @@ module.exports = async function (deployer) {
 
   //Now lets deploy erc20s for the yes/no of these marekts
   //Only thing that the UI has to know is the address of the augur foundry which will be available in the markets.json
+  let augurAddress = await paraDeployer.methods
+    .paraAugurs(wETH.options.address)
+    .call();
+  augur.options.address = augurAddress;
 
+  let shareTokenAddress = await augur.methods
+    .lookup(getBytes32FromString("ShareToken"))
+    .call();
+  console.log("shareTokenAddress", shareTokenAddress);
   await deployer.deploy(
     AugurFoundry,
-    shareToken.options.address,
-    cash.options.address
+    shareTokenAddress,
+    wETH.options.address,
+    augurAddress
   );
   let augurFoundry = await AugurFoundry.deployed();
   // console.log(augurFoundry.address);

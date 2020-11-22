@@ -16,14 +16,9 @@ const markets = require("../markets/markets-local.json");
 
 const erc20 = new web3.eth.Contract(contracts["Cash.sol"].Cash.abi);
 const repToken = erc20;
-//This is the DAI token
-const cash = new web3.eth.Contract(
-  contracts["Cash.sol"].Cash.abi,
-  addresses.Cash
-);
+
 const shareToken = new web3.eth.Contract(
-  contracts["reporting/ShareToken.sol"].ShareToken.abi,
-  addresses.ShareToken
+  contracts["reporting/ShareToken.sol"].ShareToken.abi
 );
 const market = new web3.eth.Contract(
   contracts["reporting/Market.sol"].Market.abi
@@ -72,6 +67,7 @@ module.exports = async function (deployer) {
   //Only thing that the UI has to know is the address of the augur foundry which will be available in the markets.json
 
   let augurFoundry = await AugurFoundry.at(markets[0].augurFoundryAddress);
+  shareToken.options.address = await augurFoundry.shareToken();
   // console.log(augurFoundry.address);
 
   //deploy erc20wrappers
