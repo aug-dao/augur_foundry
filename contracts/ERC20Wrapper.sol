@@ -1,4 +1,4 @@
-pragma solidity ^0.6.2;
+pragma solidity =0.6.5;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155Receiver.sol";
 import "@uniswap/lib/contracts/libraries/TransferHelper.sol";
@@ -15,10 +15,10 @@ import "./IWETH.sol";
  * AugurFoundry passed in the constructor has special permission to mint and burn.
  */
 contract ERC20Wrapper is ERC20, ERC1155Receiver {
-    uint256 public tokenId;
-    IShareToken public shareToken;
-    IWETH public wETH;
-    address public augurFoundry;
+    uint256 public immutable tokenId;
+    IShareToken public immutable shareToken;
+    IWETH public immutable wETH;
+    address public immutable augurFoundry;
 
     /**
      * @dev sets values for

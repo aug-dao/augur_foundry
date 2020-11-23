@@ -1,4 +1,4 @@
-pragma solidity ^0.6.2;
+pragma solidity =0.6.5;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "../IWETH.sol";
 

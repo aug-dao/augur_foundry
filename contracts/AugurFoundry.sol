@@ -1,4 +1,4 @@
-pragma solidity ^0.6.2;
+pragma solidity =0.6.5;
 import "./ERC20Wrapper.sol";
 import "./IWETH.sol";
 import "./IShareToken.sol";
@@ -13,9 +13,9 @@ pragma experimental ABIEncoderV2;
  * @author yashnaman
  */
 contract AugurFoundry {
-    IShareToken public shareToken;
-    IWETH public wETH;
-    address public augur;
+    IShareToken public immutable shareToken;
+    IWETH public immutable wETH;
+    address public immutable augur;
 
     mapping(uint256 => address payable) public wrappers;
 
@@ -166,11 +166,11 @@ contract AugurFoundry {
      *
      * -  msg.sender has setApprovalForAll their sharetokens to this contract
      * @param _market The market to sell complete sets in
-     * @param _holder The holder of the complete sets
      * @param _recipient The recipient of funds from the sale
      * @param _amount The number of complete sets to sell
      * @param _fingerprint Fingerprint of the filler used to naively restrict affiliate fee dispursement
-     * @return (uint256 _creatorFee, uint256 _reportingFee) The fees taken for the market creator and reporting respectively
+     * @return _creatorFee  The fees taken for the market creator
+     * @return _reportingFee  The fees taken for the reporting respectively
      */
     function sellCompleteSets(
         address _market,
@@ -178,7 +178,7 @@ contract AugurFoundry {
         uint256 _amount,
         bytes32 _fingerprint
     ) external returns (uint256 _creatorFee, uint256 _reportingFee) {
-        shareToken.sellCompleteSets(
+        (_creatorFee, _reportingFee) = shareToken.sellCompleteSets(
             _market,
             msg.sender,
             address(this),

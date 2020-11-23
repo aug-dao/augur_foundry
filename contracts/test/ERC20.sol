@@ -1,4 +1,4 @@
-pragma solidity ^0.6.2;
+pragma solidity =0.6.5;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract SimpleERC20 is ERC20 {
