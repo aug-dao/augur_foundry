@@ -25,7 +25,7 @@ contract ERC20Wrapper is ERC20, ERC1155Receiver {
      * @param _augurFoundry A trusted factory contract so that users can wrap multiple tokens in one
      * transaction without giving individual approvals
      * @param _shareToken address of shareToken for which this wrapper is for
-     * @param _wETH DAI
+     * @param _wETH Wrapped ETH
      * @param _tokenId id of market outcome this wrapper is for
      * @param _name a descriptive name mentioning market and outcome
      * @param _symbol symbol
@@ -97,8 +97,8 @@ contract ERC20Wrapper is ERC20, ERC1155Receiver {
         );
     }
 
-    /**@dev A function that burns ERC20s and gives back DAI
-     * It will return _account DAI if the outcome for which this wrapper is for
+    /**@dev A function that burns ERC20s and gives back ETH
+     * It will return _account ETH if the outcome for which this wrapper is for
      * is a winning outcome.
      * Requirements:
      *  - if msg.sender is not {_account} then {_account} should have given allowance to msg.sender
@@ -108,7 +108,7 @@ contract ERC20Wrapper is ERC20, ERC1155Receiver {
      * - Not really a requirement but...
      *  it makes more sense to call it when the market has finalized.
      *
-     * @param _account account for which DAI is being claimed
+     * @param _account account for which ETH is being claimed
      */
     function claim(address _account) public {
         /**@notice checks if the proceeds were claimed before. If not then claims the proceeds */
@@ -123,7 +123,7 @@ contract ERC20Wrapper is ERC20, ERC1155Receiver {
             wETH.withdraw(wETHBalance);
         }
         uint256 ETHBalance = address(this).balance;
-        /**@notice If this is a winning outcome then give the user thier share of DAI */
+        /**@notice If this is a winning outcome then give the user thier share of ETH */
         if (ETHBalance != 0) {
             uint256 userShare = (ETHBalance.mul(balanceOf(_account))).div(
                 totalSupply()

@@ -11,18 +11,22 @@ const contracts = require("../contracts.json").contracts;
 const addresses = require("../environments/environment-local.json").addresses;
 const markets = require("../markets/markets-local.json");
 
-// const augurFoundry = new web3.eth.Contract(
-//   contracts["AugurFoundry.sol"].AugurFoundry.abi,
-//   markets[0].augurFoundryAddress
-// );
-// const erc20Wrapper = new web3.eth.Contract(
-//   contracts["ERC20Wrapper.sol"].ERC20Wrapper.abi
-// );
+const augurFoundry = new web3.eth.Contract(
+  contracts["AugurFoundry.sol"].AugurFoundry.abi,
+  markets[0].augurFoundryAddress
+);
+const erc20Wrapper = new web3.eth.Contract(
+  contracts["ERC20Wrapper.sol"].ERC20Wrapper.abi
+);
 
 const universe = new web3.eth.Contract(
-  contracts["reporting/Universe.sol"].Universe.abi
+  contracts["reporting/Universe.sol"].Universe.abi,
+  addresses.Universe
 );
-const augur = new web3.eth.Contract(contracts["Augur.sol"].Augur.abi);
+const augur = new web3.eth.Contract(
+  contracts["Augur.sol"].Augur.abi,
+  addresses.Augur
+);
 const timeControlled = new web3.eth.Contract(
   contracts["TimeControlled.sol"].TimeControlled.abi,
   addresses.TimeControlled
@@ -47,15 +51,6 @@ const disputeWindow = new web3.eth.Contract(
   contracts["reporting/DisputeWindow.sol"].DisputeWindow.abi
 );
 
-const paraDeployer = new web3.eth.Contract(
-  contracts["para/ParaDeployer.sol"].ParaDeployer.abi,
-  addresses.ParaDeployer
-);
-const wETH = new web3.eth.Contract(
-  contracts["0x/erc20/contracts/src/WETH9.sol"].WETH9.abi,
-  addresses.WETH9
-);
-
 const with18Decimals = function (amount) {
   return amount.mul(new BN(10).pow(new BN(18)));
 };
@@ -66,109 +61,25 @@ const OUTCOMES = { INVALID: 0, NO: 1, YES: 2 };
 const outComes = [0, 1, 2];
 // Object.freeze(outComes);
 
-const createParaAugurForAToken = async function (tokenAddress, account) {
-  //first add token
-  console.log("Deploying para augur");
-
-  let tokenTradeIntervalModifier = 1;
-
-  let paraDeployProgress = await paraDeployer.methods
-    .paraDeployProgress(tokenAddress)
-    .call();
-
-  if (paraDeployProgress == 0) {
-    console.log("adding token");
-    await paraDeployer.methods
-      .addToken(tokenAddress, tokenTradeIntervalModifier)
-      .send({ from: account });
-  } else if (paraDeployProgress == 14) {
-    console.log("para Augur Deployement done Already");
-  } else if (paraDeployProgress > 1) {
-    paraDeployProgress = await paraDeployer.methods
-      .paraDeployProgress(tokenAddress)
-      .call();
-
-    console.log("Deploying para augur contracts");
-    for (let i = paraDeployProgress; i <= 13; i++) {
-      await paraDeployer.methods
-        .progressDeployment(tokenAddress)
-        .send({ from: account });
-
-      console.log(
-        await paraDeployer.methods.paraDeployProgress(tokenAddress).call()
-      );
-    }
-    console.log("Deployment of para augur contracts done");
-  }
-};
-const getBytes32FromString = function (someString) {
-  return web3.utils.fromAscii(someString);
-};
-
 //Make below function availbe in a file as a module
-const createYesNoMarketForParaAugur = async function (
-  baseToken,
-  marketCreator,
-  marketExtraInfo
-) {
-  let accounts = await web3.eth.getAccounts();
-  marketCreator = accounts[0];
-  //get augur address
-  const augurAddress = await paraDeployer.methods.paraAugurs(baseToken).call();
-  console.log("augurAddress", augurAddress);
-  //get universe address associated with augur
-  augur.options.address = augurAddress;
-  // let universe = await augur.methods
-  //   .lookup(getBytes32FromString("Universe"))
-  //   .call();
-  // console.log("para universe", universe);
-  // const genesisUniverseAddress = await augur.methods.genesisUniverse().call();
-  // console.log("genesis Universe", genesisUniverseAddress);
-
-  // universe.options.address = genesisUniverseAddress;
-
-  //get repToken
+const createYesNoMarket = async function (marketCreator, marketExtraInfo) {
   const repAddress = await universe.methods.getReputationToken().call();
-  console.log("repToken", repAddress);
+  // console.log(repAddress);
   repToken.options.address = repAddress;
-  await repToken.methods
-    .faucet(THOUSAND.toString())
-    .send({ from: marketCreator });
-
-  console.log(
-    "balanceOf RepToken:",
-    (await repToken.methods.balanceOf(marketCreator).call()).toString()
-  );
+  // console.log(await getBalanceOf(repToken, marketCreator));
   //approve rep token to the augur to be able to create the market
   await repToken.methods
     .approve(augur.options.address, MAX_UINT256.toString())
     .send({ from: marketCreator });
-  //get the cash for theAccount from faucet method
-  let token;
-  if (baseToken == wETH.options.address) {
-    console.log("token is weth so depositing some eth to get WETH");
-    token = wETH;
-    wETH.methods.deposit().send({
-      from: marketCreator,
-      value: with18Decimals(new BN(1)),
-    });
-  } else {
-    cash.options.address = tokenAddress;
-    token = cash;
-    await cash.methods
-      .faucet(THOUSAND.toString())
-      .send({ from: marketCreator });
-  }
 
+  //get the cash for theAccount from faucet method
+  await cash.methods.faucet(THOUSAND.toString()).send({ from: marketCreator });
   //Allow cash to the augur
-  await token.methods
+  await cash.methods
     .approve(augur.options.address, MAX_UINT256.toString())
     .send({ from: marketCreator });
 
-  console.log(
-    "balanceOf baseToken:",
-    (await token.methods.balanceOf(marketCreator).call()).toString()
-  );
+  // console.log(await getBalanceOf(cash, marketCreator));
 
   let currentTime = await time.latest();
   let endTime = currentTime.add(new BN(3600 * 4));
@@ -190,16 +101,15 @@ const createYesNoMarketForParaAugur = async function (
     )
     .send({ from: marketCreator });
 
-  // return await getLatestMarket();
+  return await getLatestMarket();
 };
-
-// createYesNoMarketForParaAugur(wETH.options.address, "accounts[0]", "some");
 
 //Buys complete shares for a given market for a given amount for a given account
 const buyCompleteSets = async function (marketAddress, account, amount) {
   //NOTE : remove inconsitencies in new BN
   market.options.address = marketAddress;
-  let balance = await getBalanceOfERC20(cash, account);
+  let balance = await web3.eth.getBalance(account);
+  console.log(balance);
   let numTicks = new BN(await await market.methods.getNumTicks().call());
 
   //we need the account to have more than amount.mul(numTicks) balance
@@ -209,22 +119,12 @@ const buyCompleteSets = async function (marketAddress, account, amount) {
     //await Promise.reject(new Error("Not Enough balance to buy complete sets"));
     throw new Error("Not Enough balance to buy complete sets");
   }
-
-  let allowance = await cash.methods
-    .allowance(account, augur.options.address)
-    .call();
-
-  if (amount.mul(numTicks).cmp(new BN(allowance)) == 1) {
-    await cash.methods
-      .approve(augur.options.address, MAX_UINT256.toString())
-      .send({ from: account });
-  }
   console.log("Buying complete sets");
   // console.log(marketAddress);
   //buy the complete sets
-  await shareToken.methods
+  await augurFoundry.methods
     .buyCompleteSets(marketAddress, account, amount.toString())
-    .send({ from: account });
+    .send({ from: account, value: amount.mul(numTicks) });
 };
 //NOTE: Find a way to generate a legitimate fingerPrint
 const sellCompleteSets = async function (
@@ -471,7 +371,7 @@ module.exports = {
   sellCompleteSets: sellCompleteSets,
   wrapMultipleTokens: wrapMultipleTokens,
   unWrapMultipleTokens: unWrapMultipleTokens,
-  // createYesNoMarket: createYesNoMarket,
+  createYesNoMarket: createYesNoMarket,
   getYesNoTokenIds: getYesNoTokenIds,
   shareToken: shareToken,
   shareTokenApproveForAll: shareTokenApproveForAll,
@@ -483,5 +383,4 @@ module.exports = {
   createYesNoWrappersForMarket: createYesNoWrappersForMarket,
   getNumTicks: getNumTicks,
   claimWinningsWhenWrapped: claimWinningsWhenWrapped,
-  createParaAugurForAToken: createParaAugurForAToken,
 };

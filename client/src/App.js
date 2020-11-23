@@ -370,6 +370,19 @@ export default class App extends PureComponent {
                     >
                       REDEEM ETH
                     </Button>
+                    <Button
+                      variant="danger"
+                      type="submit"
+                      onClick={(e) =>
+                        this.showModal(
+                          markets[x].address,
+                          true,
+                          shareTokenBalances
+                        )
+                      }
+                    >
+                      WRAP SHARES
+                    </Button>
                   </span>
                 ) : isMoreThanZeroShares && isMoreThanZeroERC20s ? (
                   <span>

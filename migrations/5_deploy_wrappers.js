@@ -41,8 +41,9 @@ const outComes = [0, 1, 2];
 const getTokenId = async function (marketAddress, outcome) {
   return await shareToken.methods.getTokenId(marketAddress, outcome).call();
 };
-const getYesNoTokenIds = async function (yesNoMarketAddress) {
+const getTokenIds = async function (yesNoMarketAddress) {
   let tokenIds = [];
+  tokenIds.push(await getTokenId(yesNoMarketAddress, OUTCOMES.INVALID));
   tokenIds.push(await getTokenId(yesNoMarketAddress, OUTCOMES.NO));
   tokenIds.push(await getTokenId(yesNoMarketAddress, OUTCOMES.YES));
   return tokenIds;
@@ -75,16 +76,20 @@ module.exports = async function (deployer) {
 
   for (i in markets) {
     // let i = 1;
-    let names = [markets[i].noName, markets[i].yesName];
+    let names = [markets[i].invalidName, markets[i].noName, markets[i].yesName];
     // console.log(names);
-    let symbols = [markets[i].noSymbol, markets[i].yesSymbol];
+    let symbols = [
+      markets[i].invalidName,
+      markets[i].noSymbol,
+      markets[i].yesSymbol,
+    ];
     // console.log(symbols);
     if (!(names[0] && symbols[0])) {
       //When you are deploying on local
-      names = ["NO", "YES"];
-      symbols = ["NO", "YES"];
+      names = ["INVALID" + i, "NO" + i, "YES" + i];
+      symbols = ["I" + i, "NO" + i, "YES" + i];
     }
-    let tokenIds = await getYesNoTokenIds(markets[i].address);
+    let tokenIds = await getTokenIds(markets[i].address);
 
     let numTicks = await getNumTicks(markets[i].address);
     let zeros = new BN(0);
@@ -93,22 +98,32 @@ module.exports = async function (deployer) {
       zeros = zeros.add(new BN(1));
     }
     let decimals = new BN(18).sub(zeros);
+    console.log("names", names);
 
-    console.log("decimals: " + decimals);
-    // console.log("creating new ERC20s");
+    for (i in tokenIds) {
+      //deploying all three wrappers in one transaction fails in geth
+      // await augurFoundry.newERC20Wrappers(tokenIds, names, symbols, [
+      //   decimals,
+      //   decimals,
+      //   decimals,
+      // ]);
+      await augurFoundry.newERC20Wrapper(
+        tokenIds[i],
+        names[i],
+        symbols[i],
+        decimals
+      );
 
-    await augurFoundry.newERC20Wrappers(tokenIds, names, symbols, [
-      decimals,
-      decimals,
-    ]);
+      // console.log(await augurFoundry.wrappers(tokenIds[1]));
+    }
+    markets[i].invalidTokenId = tokenIds[0];
+    markets[i].noTokenId = tokenIds[1];
+    markets[i].yesTokenId = tokenIds[2];
 
-    markets[i].noTokenId = tokenIds[0];
-    markets[i].yesTokenId = tokenIds[1];
     //add these tokenAddresses to the markets json file
-    markets[i].NoTokenAddress = await augurFoundry.wrappers(tokenIds[0]);
-    markets[i].YesTokenAddress = await augurFoundry.wrappers(tokenIds[1]);
-
-    // console.log(await augurFoundry.wrappers(tokenIds[1]));
+    markets[i].invalidTokenAddress = await augurFoundry.wrappers(tokenIds[0]);
+    markets[i].NoTokenAddress = await augurFoundry.wrappers(tokenIds[1]);
+    markets[i].YesTokenAddress = await augurFoundry.wrappers(tokenIds[2]);
   }
 
   await fs.writeFile("./markets/markets-local.json", JSON.stringify(markets));
