@@ -152,36 +152,36 @@ export default class App extends PureComponent {
       await universe.methods.getOpenInterestInAttoCash().call()
     );
 
-    // let totalOIEth = web3.utils.fromWei(totalOIWei);
+    // // let totalOIEth = web3.utils.fromWei(totalOIWei);
+    // // //This is a hack for precision when dealing with bignumber
+    // // let n = totalOIEth.indexOf(".");
+    // // let totalOI = totalOIEth.substring(0, n != -1 ? n + 3 : totalOIEth.length);
+    // console.log(web3.utils.fromWei(totalOIWei).toString());
+    // let foundryTVLWei = new BN(0);
+    // for (let i = 0; i < markets.length; i++) {
+    //   market.options.address = markets[i].address;
+    //   foundryTVLWei = foundryTVLWei.add(
+    //     new BN(await market.methods.getOpenInterest().call())
+    //   );
+    // }
+    // let foundryTVLEth = web3.utils.fromWei(foundryTVLWei);
     // //This is a hack for precision when dealing with bignumber
-    // let n = totalOIEth.indexOf(".");
-    // let totalOI = totalOIEth.substring(0, n != -1 ? n + 3 : totalOIEth.length);
-    console.log(web3.utils.fromWei(totalOIWei).toString());
-    let foundryTVLWei = new BN(0);
-    for (let i = 0; i < markets.length; i++) {
-      market.options.address = markets[i].address;
-      foundryTVLWei = foundryTVLWei.add(
-        new BN(await market.methods.getOpenInterest().call())
-      );
-    }
-    let foundryTVLEth = web3.utils.fromWei(foundryTVLWei);
-    //This is a hack for precision when dealing with bignumber
-    let n = foundryTVLEth.indexOf(".");
-    let foundryTVL = foundryTVLEth.substring(
-      0,
-      n !== -1 ? n + 3 : foundryTVLEth.length
-    );
-    let foundryPecentageWei = foundryTVLWei
-      .mul(new BN(10).pow(new BN(20)))
-      .div(totalOIWei);
+    // let n = foundryTVLEth.indexOf(".");
+    // let foundryTVL = foundryTVLEth.substring(
+    //   0,
+    //   n !== -1 ? n + 3 : foundryTVLEth.length
+    // );
+    // let foundryPecentageWei = foundryTVLWei
+    //   .mul(new BN(10).pow(new BN(20)))
+    //   .div(totalOIWei);
 
-    let foundryPecentageEth = web3.utils.fromWei(foundryPecentageWei);
-    //This is a hack for precision when dealing with bignumber
-    n = foundryPecentageEth.indexOf(".");
-    let foundryPecentage = foundryPecentageEth.substring(
-      0,
-      n !== -1 ? n + 3 : foundryPecentageEth.length
-    );
+    // let foundryPecentageEth = web3.utils.fromWei(foundryPecentageWei);
+    // //This is a hack for precision when dealing with bignumber
+    // n = foundryPecentageEth.indexOf(".");
+    // let foundryPecentage = foundryPecentageEth.substring(
+    //   0,
+    //   n !== -1 ? n + 3 : foundryPecentageEth.length
+    // );
 
     this.setState(
       {
@@ -195,8 +195,8 @@ export default class App extends PureComponent {
         erc20Wrapper: erc20Wrapper,
         OUTCOMES: OUTCOMES,
         // totalOI: totalOI,
-        foundryTVL: foundryTVL,
-        foundryPecentage: foundryPecentage.toString(),
+        foundryTVL: 0,
+        foundryPecentage: 0,
         chainId: chainId,
       },
       () => {
@@ -548,16 +548,7 @@ export default class App extends PureComponent {
       let amountOfShareToBuy = weiAmount.div(numTicks);
       // console.log(web3.utils.fromWei(amountOfShareToBuy));
 
-      // //user is inouting how much ETH they want to spend
-      // //They should have more than they want to spend
-      // if (weiAmount.cmp(balance) == 1) {
-      //   //weiAmount > balance
-      //   //await Promise.reject(new Error("Not Enough balance to buy complete sets"));
-      //   this.openNotification("error", "Not Enough ETH Balance", "");
-      //   return;
-      // }
-
-      //user is inouting how much ETH they want to spend
+      //user is inputing how much ETH they want to spend
       //They should have more than they want to spend
       if (weiAmount.cmp(balance) == 1) {
         //weiAmount > balance
@@ -566,108 +557,6 @@ export default class App extends PureComponent {
         return;
       }
 
-      // let allowance = new BN(
-      //   await cash.methods.allowance(accounts[0], augur.options.address).call()
-      // );
-
-      // if (weiAmount.cmp(allowance) == 1) {
-      //   console.log("allowance");
-      //   this.openNotification(
-      //     "info",
-      //     "Approve your ETH to before minting new shares",
-      //     "This is one time transaction"
-      //   );
-      //   cash.methods
-      //     .approve(augur.options.address, constants.MAX_UINT256.toString())
-      //     .send({ from: accounts[0] })
-      //     .on("receipt", (receipt) => {
-      //       console.log("Before buy complete sets");
-      //       this.openNotification(
-      //         "info",
-      //         "Approval Successfull",
-      //         "Now we can mint shares for you"
-      //       );
-      //       this.openNotification("info", "Minting shares", "");
-      //       shareToken.methods
-      //         .buyCompleteSets(
-      //           marketAddress,
-      //           accounts[0],
-      //           amountOfShareToBuy.toString()
-      //         )
-      //         .send({ from: accounts[0] })
-      //         .on("receipt", (receipt) => {
-      //           this.openNotification(
-      //             "success",
-      //             "Shares minted successfully",
-      //             ""
-      //           );
-      //           this.initData();
-      //         })
-      //         .on("error", (error) => {
-      //           if (
-      //             error.message.includes("User denied transaction signature")
-      //           ) {
-      //             this.openNotification(
-      //               "error",
-      //               "User denied signature",
-      //               "sign the transaction to be able to execute the transaction"
-      //             );
-      //           } else {
-      //             this.openNotification(
-      //               "error",
-      //               "There was an error in executing the transaction",
-      //               ""
-      //             );
-      //           }
-      //         });
-      //     })
-      //     .on("error", (error) => {
-      //       if (error.message.includes("User denied transaction signature")) {
-      //         this.openNotification(
-      //           "error",
-      //           "User denied signature",
-      //           "sign the transaction to be able to execute the transaction"
-      //         );
-      //       } else {
-      //         this.openNotification(
-      //           "error",
-      //           "There was an error in executing the transaction",
-      //           ""
-      //         );
-      //       }
-      //     });
-      // } else {
-      //   this.openNotification("info", "Minting shares", "");
-      //   // console.log(marketAddress);
-      //   //buy the complete sets
-      //   shareToken.methods
-      //     .buyCompleteSets(
-      //       marketAddress,
-      //       accounts[0],
-      //       amountOfShareToBuy.toString()
-      //     )
-      //     .send({ from: accounts[0] })
-      //     .on("receipt", (receipt) => {
-      //       this.openNotification("success", "Shares minted successfully", "");
-      //       this.initData();
-      //     })
-      //     .on("error", (error) => {
-      //       if (error.message.includes("User denied transaction signature")) {
-      //         this.openNotification(
-      //           "error",
-      //           "User denied signature",
-      //           "sign the transaction to be able to execute the transaction"
-      //         );
-      //       } else {
-      //         this.openNotification(
-      //           "error",
-      //           "There was an error in executing the transaction",
-      //           ""
-      //         );
-      //       }
-      //     });
-
-      // }
       this.openNotification("info", "Minting shares", "");
       // console.log(marketAddress);
       //buy the complete sets
@@ -832,6 +721,7 @@ export default class App extends PureComponent {
         this.openNotification("info", "Redeeming ETH on winning shares", " ");
         //Add a check that user has the complete shares
         //i.e. balanceofShareTOken for YES/NO/INVALID should be greater then zero
+        //put a check here to check if the user has the winning outcome shares
 
         shareToken.methods
           .claimTradingProceeds(
@@ -1023,9 +913,10 @@ export default class App extends PureComponent {
           // console.log(balanceOfWinningOutcomeWrapped.toString());
           if (balanceOfWinningOutcomeWrapped.cmp(new BN(0)) == 0) {
             console.log("redeem ETH called");
-            let shareTokenBalances = await this.getYesNoBalancesMarketShareToken(
+            let shareTokenBalances = await this.getBalancesMarketShareToken(
               marketAddress
             );
+
             if (await this.checkIfMoreThanZeroShares(shareTokenBalances)) {
               this.redeemDAI(marketAddress);
             } else {
@@ -1296,8 +1187,6 @@ export default class App extends PureComponent {
     const { accounts } = this.state.web3Provider;
     // console.log("accounts{0}" + accounts[0]);
     // console.log("marketAddress" + marketAddress);
-
-    // let balances = await this.getYesNoBalancesMarketERC20(marketAddress);
 
     if (
       wrappedBalances.yesTokenBalance.cmp(new BN(0)) == 0 &&

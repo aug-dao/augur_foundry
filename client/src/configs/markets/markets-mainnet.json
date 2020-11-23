@@ -1,52 +1,26 @@
 [
   {
-    "augurFoundryAddress": "0xF086EC397B5ea91a5a88C603AD94d7939E2Bb2B6",
-    "address": "0x1EBb89156091EB0d59603C18379C03A5c84D7355",
+    "augurFoundryAddress": "0x25902168134c0a21929213e4aa9684764f8795b6",
+    "address": "0xCCe675E5808cB2788B2C24ED66Fc69F8e000e42c",
     "extraInfo": {
-      "categories": ["Politics", "US Politics", "President"],
-      "description": "Will Donald Trump win the 2020 U.S. Presidential election?",
-      "longDescription": "A candidate that receives at least 270 votes in the Electoral College shall be considered the winner. In the event that no candidate receives 270 votes, the House of Representatives will decide the winner. In the event of further indecision or tie, it will be the candidate determined to be the winner under the US Constitution.\nThis market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'."
+      "categories": ["Crypto", "Ethereum", ""],
+      "description": "Will eth2 genesis happen by December 2nd 2020 at 00:00 UTC, according to the Ethereum Foundation?",
+      "longDescription": "This market shall resolve as YES if and only if eth2 genesis happens strictly before December 2nd at 00:00 UTC. \n\nThis market is about genesis itself and not the date of creation of the Ethereum block which will be used to compute the genesis state. \n\nThe resolution of this market shall be based on the information communicated by the Ethereum Foundation prior to reporting start time. At the time of market creation, the official Ethereum Foundation blog is located at https://blog.ethereum.org/ and their official Twitter account is located at https://twitter.com/ethereum. If these change, the new official accounts of the Ethereum Foundation should be used to resolve the market. \n\nThis market is specifically about the genesis as officially announced by the Ethereum Foundation. If the Ethereum Foundation does not announce anything, the market shall resolve as NO, even if there is an independent genesis not endorsed by EF.\n\nThis market shall resolve YES if genesis occurs by December 2nd, 2020 at 00:00 UTC, regardless of any events that occur thereafter (e.g. critical Beacon chain failure)."
     },
     "YesTokenAddress": "0x3af375d9f77Ddd4F16F86A5D51a9386b7B4493Fa",
     "NoTokenAddress": "0x44Ea84a85616F8e9cD719Fc843DE31D852ad7240",
     "invalidTokenAddress": "0x0d0Bd297350b49Ee96d5D4E15a12001928fDdB1e",
-    "yesTokenId": "13900731974189947092852713860171722817829981826178629116981917578996173766656",
-    "noTokenId": "13900731974189947092852713860171722817829981826178319631972096233927448985600",
-    "invalidTokenId": "13900731974189947092852713860171722817829981826178010146962274888858724204544",
-    "yesName": "YES Donald Trump",
-    "noName": "NO Donald Trump",
-    "invalidName": "INVALID Donald Trump",
-    "yesSymbol": "yTrump",
-    "noSymbol": "nTrump",
-    "invalidSymbol": "iTrump",
-    "yesIcon": "https://cloudflare-ipfs.com/ipfs/QmRWo92JEL6s2ydN1fK2Q3KAX2rzBnTnfqkABFYHmA5EUT",
-    "noIcon": "https://cloudflare-ipfs.com/ipfs/QmUVCPwVDCTzM2kBxejB85MS2m3KRjSW7f2w81pSr8ZvTL",
-    "endTime": "1611273600"
-  },
-  {
-    "address": "0x6E6fFB10179FEbF29B0223D22793d1c1d8A8f541",
-    "extraInfo": {
-      "categories": ["Politics", "US Elections", ""],
-      "description": "Will the Democratic Party Control the Presidency, the Senate, and the House of Representatives on February 1st, 2021?",
-      "longDescription": "This market shall resolve as YES if and only if all three of the following conditions are true at 00:00 UTC on February 1st, 2021:\n\n1. The last inaugurated president of the U.S. is affiliated with the U.S. Democratic Party.\n2. The Senate Majority Leader is affiliated with the U.S. Democratic Party. \n3. The majority of voting members of the House of Representatives are affiliated with the U.S. Democratic Party",
-      "_scalarDenomination": "",
-      "offsetName": null,
-      "template": null
-    },
-    "YesTokenAddress": "0xf732eE9CCbf0Df22F53fBDd9ec88D62df298FBF8",
-    "NoTokenAddress": "0x542439Eca879E52E03E0d6E87bcdCA165634245D",
-    "invalidTokenAddress": "0xd88a33CeA70fE4e40Da9e19aD7b3cCD1d6d2a805",
-    "yesTokenId": "49952266140529865155400434447901968208997584642974691086754660656591497330688",
-    "noTokenId": "49952266140529865155400434447901968208997584642974381601744839311522772549632",
-    "invalidTokenId": "49952266140529865155400434447901968208997584642974072116735017966454047768576",
-    "yesName": "INVALID Dem Control Token",
-    "noName": "NO Dem Control Token",
-    "invalidName": "INVALID Dem Control Token",
-    "yesSymbol": "yBlue",
-    "noSymbol": "nBlue",
-    "invalidSymbol": "iBlue",
-    "yesIcon": "https://cloudflare-ipfs.com/ipfs/QmUA2ExuPSRPHepiRqe3VH4oZKHkw6URoNtFB7UqHN8Vgh",
-    "noIcon": "https://cloudflare-ipfs.com/ipfs/QmZfAjSUevTSJe5Lqg22vx4zAPGrkafDKz33LJG2GWoAqG",
-    "endTime": "1612137600"
+    "yesTokenId": "92679009627573585682140076666417100545401289386519348438683239024575687688192",
+    "noTokenId": "92679009627573585682140076666417100545401289386519038953673417679506962907136",
+    "invalidTokenId": "92679009627573585682140076666417100545401289386518729468663596334438238126080",
+    "yesName": "YES Genesis Token",
+    "noName": "NO Genesis Token",
+    "invalidName": "INVALID Genesis Token",
+    "yesSymbol": "yGEN",
+    "noSymbol": "nGEN",
+    "invalidSymbol": "iGEN",
+    "yesIcon": "https://cloudflare-ipfs.com/ipfs/QmbGGBSmjK9mWkwnRfhnExR5pE2KWMp3iKv2ytQUthRbme",
+    "noIcon": "https://cloudflare-ipfs.com/ipfs/QmNQHTt6GFdGG2VAKrJkXe3XQrtmAaCHLsLfeBCFhZuAgW",
+    "endTime": "1607040000"
   }
 ]
