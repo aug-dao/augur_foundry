@@ -99,14 +99,14 @@ export default class App extends PureComponent {
     let chainId = await web3.eth.net.getId();
     console.log("chainId: " + chainId);
 
-    // if (chainId !== 1) {
-    //   this.openNotification(
-    //     "error",
-    //     "Wrong Network",
-    //     "Please connect to Ethereum mainet"
-    //   );
-    //   return;
-    // }
+    if (chainId !== 1) {
+      this.openNotification(
+        "error",
+        "Wrong Network",
+        "Please connect to Ethereum mainet"
+      );
+      return;
+    }
 
     const OUTCOMES = { INVALID: 0, NO: 1, YES: 2 };
 
