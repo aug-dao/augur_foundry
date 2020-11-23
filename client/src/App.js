@@ -1286,7 +1286,7 @@ export default class App extends PureComponent {
     return (
       <Container className="p-3 mainContainer">
         <Jumbotron>
-          <Jumbotron className="topcorner oi-display">
+          {/* <Jumbotron className="topcorner oi-display">
             <h5>
               <span className="foundry-tvl" style={{ color: "#FFFFFF" }}>
                 Foundry TVL:{" "}
@@ -1301,7 +1301,7 @@ export default class App extends PureComponent {
                 Portion of Net Augur OI: {this.state.foundryPecentage}%
               </span>
             </h5>
-          </Jumbotron>
+          </Jumbotron> */}
           <h3 className="header">
             <span style={{ color: "#FFA300" }}>AU</span>
             <span style={{ color: "#FFFFFF" }}>
