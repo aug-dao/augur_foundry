@@ -15,9 +15,9 @@ import metaMaskStore from "./components/metaMask";
 import { BN, constants } from "@openzeppelin/test-helpers";
 import NumberFormat from "react-number-format";
 
-import markets from "./configs/markets/markets-kovan.json";
+import markets from "./configs/markets/markets-mainnet.json";
 import contracts from "./configs/contracts.json";
-import environment from "./configs/environments/environment-kovan.json";
+import environment from "./configs/environments/environment-mainnet.json";
 
 import { notification } from "antd";
 import "antd/dist/antd.css";
@@ -369,19 +369,6 @@ export default class App extends PureComponent {
                       }
                     >
                       REDEEM ETH
-                    </Button>
-                    <Button
-                      variant="danger"
-                      type="submit"
-                      onClick={(e) =>
-                        this.showModal(
-                          markets[x].address,
-                          true,
-                          shareTokenBalances
-                        )
-                      }
-                    >
-                      WRAP SHARES
                     </Button>
                   </span>
                 ) : isMoreThanZeroShares && isMoreThanZeroERC20s ? (

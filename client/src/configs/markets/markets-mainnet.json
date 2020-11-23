@@ -7,9 +7,9 @@
       "description": "Will eth2 genesis happen by December 2nd 2020 at 00:00 UTC, according to the Ethereum Foundation?",
       "longDescription": "This market shall resolve as YES if and only if eth2 genesis happens strictly before December 2nd at 00:00 UTC. \n\nThis market is about genesis itself and not the date of creation of the Ethereum block which will be used to compute the genesis state. \n\nThe resolution of this market shall be based on the information communicated by the Ethereum Foundation prior to reporting start time. At the time of market creation, the official Ethereum Foundation blog is located at https://blog.ethereum.org/ and their official Twitter account is located at https://twitter.com/ethereum. If these change, the new official accounts of the Ethereum Foundation should be used to resolve the market. \n\nThis market is specifically about the genesis as officially announced by the Ethereum Foundation. If the Ethereum Foundation does not announce anything, the market shall resolve as NO, even if there is an independent genesis not endorsed by EF.\n\nThis market shall resolve YES if genesis occurs by December 2nd, 2020 at 00:00 UTC, regardless of any events that occur thereafter (e.g. critical Beacon chain failure)."
     },
-    "YesTokenAddress": "0x3af375d9f77Ddd4F16F86A5D51a9386b7B4493Fa",
-    "NoTokenAddress": "0x44Ea84a85616F8e9cD719Fc843DE31D852ad7240",
-    "invalidTokenAddress": "0x0d0Bd297350b49Ee96d5D4E15a12001928fDdB1e",
+    "YesTokenAddress": "0x330bf55fea06ebd7451fe8e7eed355cd8c713d63",
+    "NoTokenAddress": "0x140377c240fb7b64bdb6a2cbb53fd508f97334cb",
+    "invalidTokenAddress": "0x479a2e5b9b86ef021a9f5c44bda8675cc18596c1",
     "yesTokenId": "92679009627573585682140076666417100545401289386519348438683239024575687688192",
     "noTokenId": "92679009627573585682140076666417100545401289386519038953673417679506962907136",
     "invalidTokenId": "92679009627573585682140076666417100545401289386518729468663596334438238126080",
