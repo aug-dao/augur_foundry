@@ -36,6 +36,7 @@
       "last 1 safari version"
     ]
   },
+  "homepage": ".",
   "resolutions": {
     "uncontrollable": "7.1.1"
   }
