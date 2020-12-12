@@ -97,8 +97,8 @@
     "yesSymbol": "yKYC",
     "noSymbol": "nKYC",
     "invalidSymbol": "iKYC",
-    "yesIcon": "",
-    "noIcon": "",
+    "yesIcon": "https://cloudflare-ipfs.com/ipfs/QmerMfGBP3n6sWRoNCPtL11XdLqXcmdsJPHZYbxKKxHLRS",
+    "noIcon": "https://cloudflare-ipfs.com/ipfs/QmQJfowCxSt4UD7wcSss6N4bHyMD25q2jxZAsMsXTmRrfF",
     "endTime": "1611273600"
   }
 ]
