@@ -267,10 +267,10 @@ export default class App extends PureComponent {
                         name={'inputAmount' + i}
                         placeholder="Amount of Yes Shares"
                         value={
-                            this.state['inputAmount' + i] === undefined
-                                ? web3.utils.fromWei(balances[i])
-                                : this.state['inputAmount' + i]
-                            // this.state['inputAmount' + i]
+                            // this.state['inputAmount' + i] === undefined
+                            //     ? web3.utils.fromWei(balances[i])
+                            //     : this.state['inputAmount' + i]
+                            this.state['inputAmount' + i]
                         }
                         onChange={this.handleChange}
                     />
@@ -319,7 +319,7 @@ export default class App extends PureComponent {
         // console.log(markets);
         this.openNotification('info', 'Updating Markets...', '', 5)
         for (let x = 0; x < markets.length; x++) {
-        // for (let x = 0; x < 1; x++) {
+            // for (let x = 0; x < 1; x++) {
             // let x = 0;
             const wrappedBalances = await this.getBalancesMarketERC20(
                 markets[x].address
