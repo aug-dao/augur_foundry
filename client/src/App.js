@@ -258,6 +258,9 @@ export default class App extends PureComponent {
         for (let i = 0; i < tokenIds.length; i++) {
             defaultInputAmounts.push(web3.utils.fromWei(balances[i]))
             inputAmountKeys.push('inputAmount' + i)
+            this.setState({
+                ['inputAmount' + i]: web3.utils.fromWei(balances[i]),
+            })
             console.log('state empty', this.state['inputAmount' + i])
             someData.push(
                 <Form.Group controlId={'inputAmountModal.ControlInput' + i}>
@@ -276,19 +279,16 @@ export default class App extends PureComponent {
                     />
                 </Form.Group>
             )
-            this.setState({
-                ['inputAmount' + i]: web3.utils.fromWei(balances[i]),
-            })
         }
 
         console.log('state', this.state)
 
         // }
         this.setState({
-            show: true,
             marketAddress: marketAddress,
             isWrapping: isWrapping,
             someData: someData,
+            show: true,
             // inputAmounts: defaultInputAmounts,
             // // yesAmount: defaultValues.yesAmount,
             // // noAmount: defaultValues.noAmount,
@@ -318,8 +318,8 @@ export default class App extends PureComponent {
         // let noTokenAddress = [];
         // console.log(markets);
         this.openNotification('info', 'Updating Markets...', '', 5)
-        for (let x = 0; x < markets.length; x++) {
-            // for (let x = 0; x < 1; x++) {
+        // for (let x = 0; x < markets.length; x++) {
+        for (let x = 0; x < 1; x++) {
             // let x = 0;
             const wrappedBalances = await this.getBalancesMarketERC20(
                 markets[x].address
@@ -914,7 +914,7 @@ export default class App extends PureComponent {
         //check if market has finalized if it has call the claim trading proceeds
         //if not call the buy completeshares
         const { web3, accounts } = this.state.web3Provider
-        const { shareToken, augurFoundry, OUTCOMES } = this.state
+        const { shareToken, augurFoundry, OUTCOMES, market } = this.state
         if (marketAddress) {
             let isMarketFinalized = await this.isMarketFinalized(marketAddress)
 
@@ -965,47 +965,29 @@ export default class App extends PureComponent {
                         }
                     })
             } else {
-                //here check the minimum of token balances
-                //this should be a function
-                let tokenIds = await this.getTokenIds(marketAddress)
-                // tokenIds.push(
-                //     await shareToken.methods
-                //         .getTokenId(marketAddress, OUTCOMES.INVALID)
-                //         .call()
-                // )
-                // tokenIds.push(
-                //     await shareToken.methods
-                //         .getTokenId(marketAddress, OUTCOMES.NO)
-                //         .call()
-                // )
-                // tokenIds.push(
-                //     await shareToken.methods
-                //         .getTokenId(marketAddress, OUTCOMES.YES)
-                //         .call()
-                // )
+                // //here check the minimum of token balances
 
-                //get the balance of all tokenIds and give the amoun on which is less
-                let invalidShareBalance = new BN(
-                    await shareToken.methods
-                        .balanceOf(accounts[0], tokenIds[0])
-                        .call()
-                )
-                let noShareBalance = new BN(
-                    await shareToken.methods
-                        .balanceOf(accounts[0], tokenIds[1])
-                        .call()
-                )
-                let yesShareBalance = new BN(
-                    await shareToken.methods
-                        .balanceOf(accounts[0], tokenIds[2])
-                        .call()
-                )
-                // console.log(yesShareBalance);
+                market.options.address = marketAddress
+                const numOfOutcomes = await market.methods
+                    .getNumberOfOutcomes()
+                    .call() // console.log('num of outcomes', numOfOutcomes)
 
-                let amount = BN.min(
-                    invalidShareBalance,
-                    BN.min(noShareBalance, yesShareBalance)
+                const outcomeArray = Array.from(
+                    { length: numOfOutcomes },
+                    (_, i) => i
                 )
+
+                let amount = new BN(
+                    await shareToken.methods
+                        .lowestBalanceOfMarketOutcomes(
+                            marketAddress,
+                            outcomeArray,
+                            accounts[0]
+                        )
+                        .call()
+                )
+                // let amount = new BN()
+                console.log('lowestBalance', amount.toString())
                 if (amount.cmp(new BN(0)) === 0) {
                     this.openNotification(
                         'error',
@@ -1564,69 +1546,6 @@ export default class App extends PureComponent {
                         <Modal.Header closeButton> </Modal.Header>
                         <Form onSubmit={this.onModalSubmit}>
                             <Row>
-                                {/* <Col xs={8}>
-                                    <Form.Group controlId="modal.ControlInput1">
-                                        <Form.Label
-                                            style={{ color: '#040404' }}
-                                        >
-                                            Yes:{' '}
-                                        </Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="yesAmount"
-                                            placeholder="Amount of Yes Shares"
-                                            value={this.state.yesAmount}
-                                            onChange={this.handleChange}
-                                        />
-                                    </Form.Group>
-                                </Col>
-                                <Col xs={8}>
-                                    <Form.Group controlId="modal.ControlInput2">
-                                        <Form.Label
-                                            style={{ color: '#040404' }}
-                                        >
-                                            No:{' '}
-                                        </Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="noAmount"
-                                            placeholder="Amount of No Shares"
-                                            value={this.state.noAmount}
-                                            onChange={this.handleChange}
-                                        />
-                                    </Form.Group>
-                                </Col>
-                                <Col xs={8}>
-                                    <Form.Group controlId="modal.ControlInput3">
-                                        <Form.Label
-                                            style={{ color: '#040404' }}
-                                        >
-                                            Invalid:{' '}
-                                        </Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="invalidAmount"
-                                            placeholder="Amount of Invalid Shares"
-                                            value={this.state.invalidAmount}
-                                            onChange={this.handleChange}
-                                        />
-                                    </Form.Group>
-                                </Col>
-                                <Col xs={4}>
-                                    {this.state.isWrapping ? (
-                                        <Button variant="danger" type="submit">
-                                            WRAP SHARES
-                                        </Button>
-                                    ) : (
-                                        <Button
-                                            variant="success"
-                                            className="m-left"
-                                            type="submit"
-                                        >
-                                            UNWRAP{' '}
-                                        </Button>
-                                    )}
-                                </Col> */}
                                 {this.state.someData}
                                 <Col xs={4}>
                                     {this.state.isWrapping ? (
