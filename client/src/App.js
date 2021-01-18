@@ -324,20 +324,17 @@ export default class App extends PureComponent {
             const wrappedBalances = await this.getBalancesMarketERC20(
                 markets[x].address
             )
-            // let {
-            //     invalidTokenAddress,
-            //     yesTokenAddress,
-            //     noTokenAddress,
-            // } = await this.getTokenAddresses(markets[x].address)
+
             const tokenAddresses = await this.getTokenAddresses(
                 markets[x].address
             )
 
             let decimals = new BN(15)
             let multiplier = new BN(3)
-            if (chainId == 42) {
-                multiplier = new BN(2)
-            }
+
+            // if (chainId == 42) {
+            //     multiplier = new BN(2)
+            // }
             for (let i = 0; i < wrappedBalances.length; i++) {
                 wrappedBalances[i] = wrappedBalances[i].mul(
                     new BN(10).pow(multiplier)
@@ -1477,9 +1474,9 @@ export default class App extends PureComponent {
         //TODO: Add multiplier in the state
         let multiplier = new BN(3)
         let chainId = await web3.eth.net.getId()
-        if (chainId === 42) {
-            multiplier = new BN(2)
-        }
+        // if (chainId === 42) {
+        //     multiplier = new BN(2)
+        // }
 
         let inputAmounts = []
         for (let i = 0; i < tokenIds.length; i++) {

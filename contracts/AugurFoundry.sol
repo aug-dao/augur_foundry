@@ -1,6 +1,7 @@
 pragma solidity ^0.6.5;
 import './ERC20Wrapper.sol';
 import './IShareToken.sol';
+
 pragma experimental ABIEncoderV2;
 
 /**
@@ -9,7 +10,7 @@ pragma experimental ABIEncoderV2;
  * as shares on outcomes of a markets.
  * For every outcome there will be one wrapper.
  */
-contract AugurFoundry is ERC1155Receiver {
+contract AugurFoundry is ERC1155Receiver, Context {
     using SafeMath for uint256;
     IShareToken public immutable shareToken;
     IERC20 public immutable cash;
@@ -23,7 +24,7 @@ contract AugurFoundry is ERC1155Receiver {
      * @param _shareToken address of shareToken associated with a augur universe
      *@param _cash DAI
      */
-    //add trusted forwarder in the constructor and change msg.sender to _msgSender()
+    //add trusted forwarder in the constructor and change _msgSender() to _msgSender()
     constructor(
         IShareToken _shareToken,
         IERC20 _cash,
@@ -80,7 +81,7 @@ contract AugurFoundry is ERC1155Receiver {
     /**@dev A function that wraps ERC1155s shareToken into ERC20s
      * Requirements:
      *
-     * -  msg.sender has setApprovalForAll to this contract
+     * -  _msgSender() has setApprovalForAll to this contract
      * @param _tokenId token id associated with a outcome of a market
      * @param _account account the newly minted ERC20s will go to
      * @param _amount  amount of tokens to be wrapped
@@ -92,7 +93,7 @@ contract AugurFoundry is ERC1155Receiver {
     ) public {
         ERC20Wrapper erc20Wrapper = ERC20Wrapper(wrappers[_tokenId]);
         shareToken.safeTransferFrom(
-            msg.sender,
+            _msgSender(),
             address(erc20Wrapper),
             _tokenId,
             _amount,
@@ -104,7 +105,7 @@ contract AugurFoundry is ERC1155Receiver {
     /**@dev A function that burns ERC20s and gives back ERC1155s
      * Requirements:
      *
-     * - msg.sender has more than _amount of ERC20 tokens associated with _tokenId.
+     * - _msgSender() has more than _amount of ERC20 tokens associated with _tokenId.
      * - if the market has finalized then it is  advised that you call claim() on ERC20Wrapper
      * contract associated with the winning outcome
      * @param _tokenId token id associated with a outcome of a market
@@ -117,10 +118,14 @@ contract AugurFoundry is ERC1155Receiver {
         address _recipient
     ) public {
         ERC20Wrapper erc20Wrapper = ERC20Wrapper(wrappers[_tokenId]);
-        erc20Wrapper.unWrapTokens(msg.sender, _amount, _recipient);
+        erc20Wrapper.unWrapTokens(_msgSender(), _amount, _recipient);
     }
 
+    //TODO: Add permit + mint function
+    //TODO: Add permit + mint + wrap function
+
     //mintWrap with the abilty to mint complete sets and wrap only some of them
+
     function mintAndWrap(
         uint256[] memory _tokenIds,
         uint256[] memory _wrappingAmounts,
@@ -131,7 +136,7 @@ contract AugurFoundry is ERC1155Receiver {
     ) public {
         require(
             cash.transferFrom(
-                msg.sender,
+                _msgSender(),
                 address(this),
                 _mintAmount.sub(_numTicks)
             )
@@ -155,7 +160,7 @@ contract AugurFoundry is ERC1155Receiver {
             if (_wrappingAmounts[i] < _mintAmount) {
                 shareToken.safeTransferFrom(
                     address(this),
-                    msg.sender,
+                    _msgSender(),
                     _tokenIds[i],
                     _wrappingAmounts[i].sub(_mintAmount),
                     ''
@@ -182,6 +187,8 @@ contract AugurFoundry is ERC1155Receiver {
             _fingerprint
         );
     }
+
+    //TODO: add unwrap and redeem with option for partial unwrap
 
     /**@dev wraps multiple tokens */
     function wrapMultipleTokens(
@@ -211,7 +218,7 @@ contract AugurFoundry is ERC1155Receiver {
         To accept the transfer, this must return
         `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
         (i.e. 0xf23a6e61, or its own function selector).
-        @param operator The address which initiated the transfer (i.e. msg.sender)
+        @param operator The address which initiated the transfer (i.e. _msgSender())
         @param from The address which previously owned the token
         @param id The ID of the token being transferred
         @param value The amount of tokens being transferred
@@ -240,7 +247,7 @@ contract AugurFoundry is ERC1155Receiver {
         been updated. To accept the transfer(s), this must return
         `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
         (i.e. 0xbc197c81, or its own function selector).
-        @param operator The address which initiated the batch transfer (i.e. msg.sender)
+        @param operator The address which initiated the batch transfer (i.e. _msgSender())
         @param from The address which previously owned the token
         @param ids An array containing ids of each token being transferred (order and length must match values array)
         @param values An array containing amounts of each token being transferred (order and length must match ids array)
