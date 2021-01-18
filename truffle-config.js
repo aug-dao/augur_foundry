@@ -18,9 +18,9 @@
  *
  */
 require('dotenv').config()
-const PrivateKeyProvider = require('@truffle/hdwallet-provider')
+const HDWalletProvider = require('@truffle/hdwallet-provider')
 const privateKey =
-    '0x213b4241c602e46ce57ac851cd72ef5aa1d5b0f1404799099adfc23414b1a3fb'
+    '213b4241c602e46ce57ac851cd72ef5aa1d5b0f1404799099adfc23414b1a3fb'
 // const privateKeyProvider = new PrivateKeyProvider(
 //   privateKey,
 //   process.env.KOVAN_PROVIDER
@@ -68,10 +68,11 @@ module.exports = {
         // },
         kovan: {
             networkCheckTimeout: 10000,
-            provider: () => new PrivateKeyProvider(privateKey, kovanProvider),
+            provider: () => new HDWalletProvider([privateKey], kovanProvider),
             network_id: 42,
             from: account,
             gas: 8000000,
+            gasPrice: 1000000000, //1 GWEI
             skipDryRun: true,
             confirmations: 0,
         },
@@ -115,13 +116,14 @@ module.exports = {
         solc: {
             version: '0.6.5', // Fetch exact version from solc-bin (default: truffle's version)
             // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
-            // settings: {          // See the solidity docs for advice about optimization and evmVersion
-            //  optimizer: {
-            //    enabled: false,
-            //    runs: 200
-            //  },
-            //  evmVersion: "byzantium"
-            // }
+            settings: {
+                // See the solidity docs for advice about optimization and evmVersion
+                optimizer: {
+                    enabled: true,
+                    runs: 200,
+                },
+                //  evmVersion: "byzantium"
+            },
         },
     },
 }

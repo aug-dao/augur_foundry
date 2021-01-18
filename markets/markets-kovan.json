@@ -1,12 +1,18 @@
 [
     {
-        "augurFoundryAddress": "0xdD56274465443E6Dd063066a38AABc2ef3FEAd94",
+        "augurFoundryAddress": "0x33E97B4889c3cc70591AdD4Ffe7E62804EF9AA9C",
         "address": "0x99EB774c9Ce9201d9a7a5E9394b45081A12918F8",
         "extraInfo": {
             "categories": ["Politics", "US Politics", "President"],
             "description": "Will DJ win the 2020 U.S. Presidential election?",
             "longDescription": "The winning candidate will have at least 270 electoral votes to win the presidential election.\nThis market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'."
-        }
+        },
+        "invalidTokenId": "69619898266758512267710038219605020375574206999554793464500394320088547721216",
+        "noTokenId": "69619898266758512267710038219605020375574206999555102949510215665157272502272",
+        "yesTokenId": "69619898266758512267710038219605020375574206999555412434520037010225997283328",
+        "invalidTokenAddress": "0xBeD659939D90Ed4B0eEf9871A17FD9Ac533ede49",
+        "NoTokenAddress": "0x1b5F5a0cE47DF3088a0A47a69fE0a26d64AD8eF2",
+        "YesTokenAddress": "0x7c6fd5D713a0d1300FBb0A45Fd60557A7fA01f82"
     },
     {
         "address": "0xf84a0dD7130A3b6a00033Cd41E27aC56C3B3D8db",
@@ -14,7 +20,13 @@
             "categories": ["Sports", "Basketball", "NBA"],
             "description": " Will Anthony Davis win the 2019-20 Defensive Player of the Year award?",
             "longDescription": "In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as Yes.This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'. If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'."
-        }
+        },
+        "invalidTokenId": "112304428652539849249503943142825651240887506163046063182659726092279417405440",
+        "noTokenId": "112304428652539849249503943142825651240887506163046372667669547437348142186496",
+        "yesTokenId": "112304428652539849249503943142825651240887506163046682152679368782416866967552",
+        "invalidTokenAddress": "0x6AA2A8498F6507a729e56640455156746c86908E",
+        "NoTokenAddress": "0x262159870BA1E34812E3AccD20B9E1558fEADfC8",
+        "YesTokenAddress": "0x3D4f7a2E01ed33Dcbf00b03E1107252f79f7748C"
     },
     {
         "address": "0x0599f7E51B41673ec1cEa31E088C2Ee041d22fBB",
@@ -22,7 +34,13 @@
             "categories": ["Medical", "Covid-19", ""],
             "description": "Will the FDA approve a vaccine for Coronavirus (Covid-19) by October 31, 2020?",
             "longDescription": ""
-        }
+        },
+        "invalidTokenId": "2533602751873206023703392730727115654029355020120906308856870046527054151680",
+        "noTokenId": "2533602751873206023703392730727115654029355020121215793866691391595778932736",
+        "yesTokenId": "2533602751873206023703392730727115654029355020121525278876512736664503713792",
+        "invalidTokenAddress": "0x597B546Be051f5DB4B60C452334f4267FA6501F9",
+        "NoTokenAddress": "0x5074A27d8FA915f6A1C5dcb37776F7ace6217146",
+        "YesTokenAddress": "0x263Ae106aEbb3e1210B28E410b4beA82d0849b6e"
     },
     {
         "address": "0xE51eE82fD63281B0e4A8E4559d977bF28C786066",
@@ -30,6 +48,12 @@
             "categories": ["Crypto", "Ethereum", "ETHUSD (crypto - Bitfinex)"],
             "description": "Will the price of ETH/USD open at or above 800 on September 30, 2020, according to TradingView.com \\\"ETHUSD (crypto - Bitfinex)",
             "longDescription": "Use ticker symbol search for token pair (ie ETHUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.\\nOpening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00\\nIf the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick."
-        }
+        },
+        "invalidTokenId": "103634250232338910863679575054280405426931971337471595987838611677218280046592",
+        "noTokenId": "103634250232338910863679575054280405426931971337471905472848433022287004827648",
+        "yesTokenId": "103634250232338910863679575054280405426931971337472214957858254367355729608704",
+        "invalidTokenAddress": "0xe8345c4b3d87455Ae5D43531daf74826AeBD55d8",
+        "NoTokenAddress": "0xF2DBb591FA732b50d01BF1C23f5D7626CAAdE058",
+        "YesTokenAddress": "0x86Fd0cBdD81FB80baE08904030166a8Cc31B1d62"
     }
 ]

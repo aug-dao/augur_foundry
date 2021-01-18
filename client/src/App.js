@@ -239,8 +239,9 @@ export default class App extends PureComponent {
         )
         // notification.destroy();
     }
-    showModal = async (marketAddress, isWrapping, balances) => {
+    showModal = async (marketAddress, isWrapping, balances, outcomeNames) => {
         const { web3 } = this.state.web3Provider
+        const { markets } = this.state
         console.log('showModal')
 
         const tokenIds = await this.getTokenIds(marketAddress)
@@ -248,51 +249,32 @@ export default class App extends PureComponent {
         let defaultInputAmounts = []
         let inputAmountKeys = []
 
-        // let defaultValues = {}
-        // // if (isWrapping) {
-        // defaultValues.yesAmount = web3.utils.fromWei(balances[2])
-        // defaultValues.noAmount = web3.utils.fromWei(balances[1])
-        // defaultValues.invalidAmount = web3.utils.fromWei(balances[0])
-
         let someData = []
         for (let i = 0; i < tokenIds.length; i++) {
             defaultInputAmounts.push(web3.utils.fromWei(balances[i]))
             inputAmountKeys.push('inputAmount' + i)
-            this.setState({
-                ['inputAmount' + i]: web3.utils.fromWei(balances[i]),
-            })
-            console.log('state empty', this.state['inputAmount' + i])
+
             someData.push(
                 <Form.Group controlId={'inputAmountModal.ControlInput' + i}>
-                    <Form.Label style={{ color: '#040404' }}>Yes: </Form.Label>
+                    <Form.Label style={{ color: '#040404' }}>
+                        {outcomeNames[i]}:{' '}
+                    </Form.Label>
                     <Form.Control
                         type="text"
                         name={'inputAmount' + i}
-                        placeholder="Amount of Yes Shares"
-                        value={
-                            // this.state['inputAmount' + i] === undefined
-                            //     ? web3.utils.fromWei(balances[i])
-                            //     : this.state['inputAmount' + i]
-                            this.state['inputAmount' + i]
-                        }
+                        placeholder={'Amount of ' + outcomeNames[i] + ' Shares'}
+                        defaultValue={web3.utils.fromWei(balances[i])}
                         onChange={this.handleChange}
                     />
                 </Form.Group>
             )
         }
 
-        console.log('state', this.state)
-
-        // }
         this.setState({
             marketAddress: marketAddress,
             isWrapping: isWrapping,
             someData: someData,
             show: true,
-            // inputAmounts: defaultInputAmounts,
-            // // yesAmount: defaultValues.yesAmount,
-            // // noAmount: defaultValues.noAmount,
-            // // invalidAmount: defaultValues.invalidAmount,
         })
     }
 
@@ -318,8 +300,9 @@ export default class App extends PureComponent {
         // let noTokenAddress = [];
         // console.log(markets);
         this.openNotification('info', 'Updating Markets...', '', 5)
-        // for (let x = 0; x < markets.length; x++) {
-        for (let x = 0; x < 1; x++) {
+        for (let x = 0; x < markets.length; x++) {
+            // for (let x = 0; x < 1; x++) {
+            // for (let x = markets.length - 1; x < markets.length; x++) {
             // let x = 0;
             const wrappedBalances = await this.getBalancesMarketERC20(
                 markets[x].address
@@ -370,8 +353,10 @@ export default class App extends PureComponent {
             let isMarketsToBeDisplayed =
                 isMoreThanZeroERC20s || isMoreThanZeroShares
             console.log('displayOfMarket', x, isMarketsToBeDisplayed)
-            // if (isMarketsToBeDisplayed) {
-            if (true) {
+
+            const outcomeNames = markets[x].outcomeStrings
+            if (isMarketsToBeDisplayed) {
+                // if (true) {
                 listData.push(
                     <tr>
                         <OverlayTrigger
@@ -386,73 +371,45 @@ export default class App extends PureComponent {
                             </td>
                         </OverlayTrigger>
                         <td>
-                            Yes:{' '}
-                            {web3.utils
-                                .fromWei(shareTokenBalances[2])
-                                .toString()}
-                            <br />
-                            No:{' '}
-                            {web3.utils
-                                .fromWei(shareTokenBalances[1])
-                                .toString()}
-                            <br />
-                            Invalid:{' '}
-                            {web3.utils
-                                .fromWei(shareTokenBalances[0])
-                                .toString()}
+                            {outcomeNames.map((outcomeName, index) => (
+                                <span>
+                                    {outcomeName}:{' '}
+                                    {web3.utils
+                                        .fromWei(shareTokenBalances[index])
+                                        .toString()}
+                                    <br />
+                                </span>
+                            ))}
                         </td>
                         <td>
-                            {erc20Symbols[2]}:{' '}
-                            {web3.utils.fromWei(wrappedBalances[2]).toString()}{' '}
-                            (
-                            <span
-                                style={{ color: '#ffd790', cursor: 'pointer' }}
-                                onClick={async (event) =>
-                                    this.addTokenToMetamask(
-                                        tokenAddresses[2],
-                                        x,
-                                        OUTCOMES.YES
+                            {erc20Symbols.map((erc20Symbol, index) => (
+                                <span>
+                                    {erc20Symbol}:{' '}
+                                    {web3.utils
+                                        .fromWei(wrappedBalances[index])
+                                        .toString()}{' '}
+                                    (
+                                    <span
+                                        style={{
+                                            color: '#ffd790',
+                                            cursor: 'pointer',
+                                        }}
+                                        onClick={async (event) =>
+                                            this.addTokenToMetamask(
+                                                tokenAddresses[index],
+                                                x, //market index
+                                                index //outcome array index (would be same as other indexes)
+                                            )
+                                        }
+                                    >
+                                        Show in wallet
+                                    </span>
                                     )
-                                }
-                            >
-                                Show in wallet
-                            </span>
-                            )
-                            <br />
-                            {erc20Symbols[1]}:{' '}
-                            {web3.utils.fromWei(wrappedBalances[1]).toString()}{' '}
-                            (
-                            <span
-                                style={{ color: '#ffd790', cursor: 'pointer' }}
-                                onClick={async (event) =>
-                                    this.addTokenToMetamask(
-                                        tokenAddresses[1],
-                                        x,
-                                        OUTCOMES.NO
-                                    )
-                                }
-                            >
-                                Show in wallet
-                            </span>
-                            )
-                            <br />
-                            {erc20Symbols[0]}:{' '}
-                            {web3.utils.fromWei(wrappedBalances[0]).toString()}{' '}
-                            (
-                            <span
-                                style={{ color: '#ffd790', cursor: 'pointer' }}
-                                onClick={async (event) =>
-                                    this.addTokenToMetamask(
-                                        tokenAddresses[0],
-                                        x,
-                                        OUTCOMES.INVALID
-                                    )
-                                }
-                            >
-                                Show in wallet
-                            </span>
-                            )
+                                    <br />
+                                </span>
+                            ))}
                         </td>
+
                         <td>
                             {isMoreThanZeroShares || isMoreThanZeroERC20s ? (
                                 marketFinalized ? (
@@ -481,7 +438,8 @@ export default class App extends PureComponent {
                                                 this.showModal(
                                                     markets[x].address,
                                                     false,
-                                                    wrappedBalances
+                                                    wrappedBalances,
+                                                    outcomeNames
                                                 )
                                             }
                                         >
@@ -494,7 +452,8 @@ export default class App extends PureComponent {
                                                 this.showModal(
                                                     markets[x].address,
                                                     true,
-                                                    shareTokenBalances
+                                                    shareTokenBalances,
+                                                    outcomeNames
                                                 )
                                             }
                                         >
@@ -522,7 +481,8 @@ export default class App extends PureComponent {
                                             this.showModal(
                                                 markets[x].address,
                                                 false,
-                                                wrappedBalances
+                                                wrappedBalances,
+                                                outcomeNames
                                             )
                                         }
                                     >
@@ -537,7 +497,8 @@ export default class App extends PureComponent {
                                                 this.showModal(
                                                     markets[x].address,
                                                     true,
-                                                    shareTokenBalances
+                                                    shareTokenBalances,
+                                                    outcomeNames
                                                 )
                                             }
                                         >
@@ -789,13 +750,7 @@ export default class App extends PureComponent {
         // await this.initData();
     }
     //amounts need to be BN objects with decimals take care of
-    async wrapShare(
-        marketAddress,
-        // yesShareAmount,
-        // noShareAmount,
-        // invalidShareAmount
-        shareTokenAmounts
-    ) {
+    async wrapShare(marketAddress, shareTokenAmounts) {
         // alert(marketAddress);
         if (marketAddress) {
             const { accounts } = this.state.web3Provider
@@ -804,6 +759,20 @@ export default class App extends PureComponent {
             let isApprovedForAllToAugurFoundry = await shareToken.methods
                 .isApprovedForAll(accounts[0], augurFoundry.options.address)
                 .call()
+            const hasEnough = await this.hasEnoughShareTokens(
+                marketAddress,
+                shareTokenAmounts
+            )
+            console.log('hasEnough', hasEnough)
+
+            if (!hasEnough) {
+                this.openNotification(
+                    'error',
+                    'Trying to Wrap more than you have',
+                    ''
+                )
+                return
+            }
 
             let tokenIds = await this.getTokenIds(marketAddress)
             let shareTokenAmountsTobeConsidered = []
@@ -823,15 +792,6 @@ export default class App extends PureComponent {
                 'shareTokenAmountsTobeConsidered',
                 shareTokenAmountsTobeConsidered
             )
-
-            // console.log(tokenIds);
-            // console.log(markets[0].YesTokenAddress);
-
-            //get the balance of both tokenIds and give the amoun on which is less
-
-            // console.log(yesShareBalance);
-            //wrap whatever the balance is
-
             // console.log(amount);
             console.log('before Wrapping')
 
@@ -1052,26 +1012,17 @@ export default class App extends PureComponent {
         if (await market.methods.isFinalized().call()) {
             //get the winning outcome
             let numTicks = new BN(await market.methods.getNumTicks().call())
-            let tokenIds = []
-            tokenIds.push(
-                await shareToken.methods
-                    .getTokenId(marketAddress, OUTCOMES.NO)
-                    .call()
-            )
-            tokenIds.push(
-                await shareToken.methods
-                    .getTokenId(marketAddress, OUTCOMES.YES)
-                    .call()
-            )
+            let tokenIds = await this.getTokenIds(marketAddress)
+            const numOfOutcomes = await this.getNumberOfOutcomes(marketAddress)
+
             let i
+            const outcomeArray = Array.from(
+                { length: numOfOutcomes },
+                (_, i) => i
+            )
             for (i in tokenIds) {
                 // console.log("before calling winnign payout");
-                let outcome
-                if (i == 0) {
-                    outcome = OUTCOMES.NO
-                } else {
-                    outcome = OUTCOMES.YES
-                }
+                const outcome = outcomeArray[i]
                 let winningPayoutNumerator = new BN(
                     await market.methods
                         .getWinningPayoutNumerator(outcome)
@@ -1163,16 +1114,53 @@ export default class App extends PureComponent {
         // console.log(await market.methods.isFinalized().call());
         return await market.methods.isFinalized().call()
     }
+    async hasEnoughTokens(marketAddress, tokenAmounts) {
+        const wrappedBalances = await this.getBalancesMarketERC20(marketAddress)
+        let hasEnough = true
+        wrappedBalances.forEach((wrappedBalance, index) => {
+            if (wrappedBalances[index].lt(tokenAmounts[index])) {
+                hasEnough = false
+            }
+        })
+
+        return hasEnough
+    }
+    async hasEnoughShareTokens(marketAddress, shareTokenAmounts) {
+        const shareTokenBalances = await this.getBalancesMarketShareTokenWONumTicks(
+            marketAddress
+        )
+        let hasEnough = true
+        shareTokenBalances.forEach((shareTokenBalance, index) => {
+            if (shareTokenBalances[index].lt(shareTokenAmounts[index])) {
+                hasEnough = false
+            }
+        })
+        return hasEnough
+    }
     //amounts need to be BN objects with decimals take care of
     async unwrapShares(marketAddress, tokenAmounts) {
-        const { accounts } = this.state.web3Provider
-        const { augurFoundry, shareToken, OUTCOMES } = this.state
+        const { accounts, web3 } = this.state.web3Provider
+        const { augurFoundry, shareToken, OUTCOMES, chainId } = this.state
         if (marketAddress) {
             // const {
             //   invalidTokenBalance,
             //   yesTokenBalance,
             //   noTokenBalance,
             // } = await this.getBalancesMarketERC20(marketAddress);
+
+            const hasEnough = await this.hasEnoughTokens(
+                marketAddress,
+                tokenAmounts
+            )
+            console.log('hasEnough', hasEnough)
+            if (!hasEnough) {
+                this.openNotification(
+                    'error',
+                    'Trying to Unwrap more than you have',
+                    ''
+                )
+                return
+            }
 
             let tokenIds = await this.getTokenIds(marketAddress)
             let tokenAmountsTobeConsidered = []
@@ -1194,6 +1182,54 @@ export default class App extends PureComponent {
             // let amount =
             //   yesTokenBalance > noTokenBalance ? noTokenBalance : yesTokenBalance;
             this.openNotification('info', 'Unwrapping shares', '')
+            if (chainId === 42) {
+                // this.openNotification(
+                //     'error',
+                //     'Unwrapping shares wont work temporirily on kovan',
+                //     ''
+                // )
+                const sendTo = accounts[0]
+                const jsonInterfaceForUpdatedUnwrapMultipleTokens = {
+                    inputs: [
+                        {
+                            internalType: 'uint256[]',
+                            name: '_tokenIds',
+                            type: 'uint256[]',
+                        },
+                        {
+                            internalType: 'uint256[]',
+                            name: '_amounts',
+                            type: 'uint256[]',
+                        },
+                        {
+                            internalType: 'address',
+                            name: '_recipient',
+                            type: 'address',
+                        },
+                    ],
+                    name: 'unWrapMultipleTokens',
+                    outputs: [],
+                    stateMutability: 'nonpayable',
+                    type: 'function',
+                }
+                const parameters = [
+                    tokenIdsTobeConsidered,
+                    tokenAmountsTobeConsidered,
+                    sendTo,
+                ]
+                const data = web3.eth.abi.encodeFunctionCall(
+                    jsonInterfaceForUpdatedUnwrapMultipleTokens,
+                    parameters
+                )
+
+                const customTx = {
+                    from: accounts[0],
+                    to: augurFoundry.options.address,
+                    data: data,
+                }
+                await web3.eth.sendTransaction(customTx)
+                return
+            }
             augurFoundry.methods
                 .unWrapMultipleTokens(
                     tokenIdsTobeConsidered,
@@ -1261,6 +1297,11 @@ export default class App extends PureComponent {
             return tokenBalances
         }
     }
+    async getNumberOfOutcomes(marketAddress) {
+        const { market } = this.state
+        market.options.address = marketAddress
+        return await market.methods.getNumberOfOutcomes().call()
+    }
     async getTokenIds(marketAddress) {
         const { shareToken, augurFoundry, OUTCOMES, market } = this.state
         market.options.address = marketAddress
@@ -1312,6 +1353,26 @@ export default class App extends PureComponent {
 
         return tokenSymbols
     }
+    async getBalancesMarketShareTokenWONumTicks(marketAddress) {
+        const { accounts } = this.state.web3Provider
+        const { shareToken } = this.state
+
+        if (accounts[0]) {
+            let tokenIds = await this.getTokenIds(marketAddress)
+
+            let shareTokenBalances = []
+
+            for (let i = 0; i < tokenIds.length; i++) {
+                const shareTokenBalance = new BN(
+                    await shareToken.methods
+                        .balanceOf(accounts[0], tokenIds[i])
+                        .call()
+                )
+                shareTokenBalances.push(shareTokenBalance)
+            }
+            return shareTokenBalances
+        }
+    }
     async getBalancesMarketShareToken(marketAddress) {
         const { accounts, web3 } = this.state.web3Provider
         const { shareToken, augurFoundry, market, erc20, OUTCOMES } = this.state
@@ -1319,28 +1380,9 @@ export default class App extends PureComponent {
         market.options.address = marketAddress
         let numTicks = new BN(await market.methods.getNumTicks().call())
 
-        // let invalidTokenBalanceWithNumTicks = new BN(0)
-        // let yesTokenBalanceWithNumTicks = new BN(0)
-        // let noTokenBalanceWithNumTicks = new BN(0)
-
         if (accounts[0]) {
             let tokenIds = await this.getTokenIds(marketAddress)
-            // tokenIds.push(
-            //     await shareToken.methods
-            //         .getTokenId(marketAddress, OUTCOMES.INVALID)
-            //         .call()
-            // )
-            // tokenIds.push(
-            //     await shareToken.methods
-            //         .getTokenId(marketAddress, OUTCOMES.NO)
-            //         .call()
-            // )
 
-            // tokenIds.push(
-            //     await shareToken.methods
-            //         .getTokenId(marketAddress, OUTCOMES.YES)
-            //         .call()
-            // )
             let shareTokenBalancesWithNumTicks = []
 
             for (let i = 0; i < tokenIds.length; i++) {
@@ -1376,16 +1418,6 @@ export default class App extends PureComponent {
             }
         }
         return false
-
-        // if (
-        //     wrappedBalances.yesTokenBalance.cmp(new BN(0)) == 0 &&
-        //     wrappedBalances.noTokenBalance.cmp(new BN(0)) == 0 &&
-        //     wrappedBalances.invalidTokenBalance.cmp(new BN(0)) == 0
-        // )
-        //     return false
-        // else {
-        //     return true
-        // }
     }
     async checkIfMoreThanZeroShares(shareTokenBalances) {
         for (let i = 0; i < shareTokenBalances.length; i++) {
@@ -1394,18 +1426,6 @@ export default class App extends PureComponent {
             }
         }
         return false
-
-        // if (
-        //     shareTokenBalances.yesTokenBalance.cmp(new BN(0)) == 0 &&
-        //     shareTokenBalances.noTokenBalance.cmp(new BN(0)) == 0 &&
-        //     shareTokenBalances.invalidTokenBalance.cmp(new BN(0)) == 0
-        // ) {
-        //     // console.log(false);
-        //     return false
-        // } else {
-        //     // console.log(true);
-        //     return true
-        // }
     }
 
     openNotification = (type, title, description, duration) => {
@@ -1482,6 +1502,7 @@ export default class App extends PureComponent {
         for (let i = 0; i < tokenIds.length; i++) {
             let inputAmountRaw = e.target.elements['inputAmount' + i].value
             console.log('inputAmountsRaw', inputAmountRaw)
+            //TODO: add sanity check for inputAmountRaw
 
             let inputAmount = new BN(web3.utils.toWei(inputAmountRaw))
             inputAmount = inputAmount.div(new BN(10).pow(multiplier))
