@@ -1781,7 +1781,7 @@ export default class App extends PureComponent {
                                     href="https://pools.balancer.exchange/#/pool/0x6b74fb4e4b3b177b8e95ba9fa4c3a3121d22fbfb/"
                                     target="_blank"
                                 >
-                                    <h5>yTrump/nTrump/DAI: </h5>
+                                    <h5>yTrump/nTrump/DAI </h5>
                                 </a>
                             </Col>
                             <Col>
@@ -1789,15 +1789,7 @@ export default class App extends PureComponent {
                                     href="https://pools.balancer.exchange/#/pool/0xed0413d19cdf94759bbe3fe9981c4bd085b430cf"
                                     target="_blank"
                                 >
-                                    <h5>nTrump/DAI: </h5>
-                                </a>
-                            </Col>
-                            <Col>
-                                <a
-                                    href="https://pools.balancer.exchange/#/pool/0xea862ffed19a2e5b8ac1b10fe14c88c1b35d4a2c"
-                                    target="_blank"
-                                >
-                                    <h5>yTrump/iTrump: </h5>
+                                    <h5>nTrump/DAI </h5>
                                 </a>
                             </Col>
                             <Col>
@@ -1805,23 +1797,23 @@ export default class App extends PureComponent {
                                     href="https://pools.balancer.exchange/#/pool/0x68c74e157f35a3e40f1b02bba3e6e3827d534059"
                                     target="_blank"
                                 >
-                                    <h5>yBlue/nBlue/DAI: </h5>
+                                    <h5>yBlue/nBlue/DAI </h5>
                                 </a>
                             </Col>
                             <Col>
                                 <a
-                                    href="https://pools.balancer.exchange/#/pool/0x91ffe46e57d7c3f5f6e4f0856f2a674d0d820f93/"
+                                    href="https://pools.balancer.exchange/#/pool/0xea09809ad3768504fe81bddc69e11653c1e7e629"
                                     target="_blank"
                                 >
-                                    <h5>yINAUG/nINAUG/DAI </h5>
+                                    <h5>yBUCCS/nBUCCS/DAI </h5>
                                 </a>
                             </Col>
                             <Col>
                                 <a
-                                    href="https://info.uniswap.org/pair/0x1e269130569ec8da6eaeaa4ad55771b57c2bb356"
+                                    href="https://pools.balancer.exchange/#/pool/0xc7d919fe3418abad0979569041bed141726e9b86"
                                     target="_blank"
                                 >
-                                    <h5>yKYC/DAI </h5>
+                                    <h5>yBILLS/nBILLS/DAI </h5>
                                 </a>
                             </Col>
                         </Row>
