@@ -100,5 +100,57 @@
     "yesIcon": "https://cloudflare-ipfs.com/ipfs/QmerMfGBP3n6sWRoNCPtL11XdLqXcmdsJPHZYbxKKxHLRS",
     "noIcon": "https://cloudflare-ipfs.com/ipfs/QmQJfowCxSt4UD7wcSss6N4bHyMD25q2jxZAsMsXTmRrfF",
     "endTime": "1611273600"
+  },
+  {
+    "address": "0x827f9A41cA4f4C6aD8098f18a045c8115d4D2749",
+    "extraInfo": {
+      "categories": ["Sports", "American Football", "NFL"],
+      "description": "Will the Buffalo Bills Win the 2021 AFC Championship Game?",
+      "longDescription": "If the game in question has not taken place by market expiration time or fewer than 55 minutes of game time have elapsed, then the market shall resolve as Invalid. If the game is suspended after at least 55 minutes of play and not resumed by market expiration time, then the score when the game is halted will determine the market outcome. If the Bills have a higher score at that time, then the market shall resolve as YES. If the Bills have a lower score or the score is tied at that time, then the market shall resolve as NO. If the game is still in play at market expiration time and at least 55 minutes of game time have elapsed, then the market shall resolve as YES if the Bills have a higher score at that time and as NO if the Bills have a lower score or if the score is tied.",
+      "_scalarDenomination": "",
+      "offsetName": null,
+      "template": null
+    },
+    "YesTokenAddress": "0x7d1d38ef81EBDFc0EEE7b987cE569563C3C2Fee0",
+    "NoTokenAddress": "0x6E93403916A0cf7b51908da63eE60753E389Bd0A",
+    "invalidTokenAddress": "0x85c2dbFDA42E9e1Cad9C99FBdD6734A135DD3459",
+    "yesTokenId": "59026124535691128840021084536255776931335549456641292910100612161640182317056",
+    "noTokenId": "59026124535691128840021084536255776931335549456640983425090790816571457536000",
+    "invalidTokenId": "59026124535691128840021084536255776931335549456640673940080969471502732754944",
+    "yesName": "YES Bills Win AFC Token",
+    "noName": "NO Bills Win AFC Token",
+    "invalidName": "INVALID Bills Win AFC Token",
+    "yesSymbol": "yBILLS",
+    "noSymbol": "nBILLS",
+    "invalidSymbol": "iBILLS",
+    "yesIcon": "",
+    "noIcon": "",
+    "endTime": "1611619200"
+  },
+  {
+    "address": "0xc8EfC74f5b5742E4d1c15ACa63684116EDe96111",
+    "extraInfo": {
+      "categories": ["Sports", "American Football", "NFL"],
+      "description": "Will the Tampa Bay Buccaneers Win the 2021 NFC Championship Game?",
+      "longDescription": "If the game in question has not taken place by market expiration time or fewer than 55 minutes of game time have elapsed, then the market shall resolve as Invalid. If the game is suspended after at least 55 minutes of play and not resumed by market expiration time, then the score when the game is halted will determine the market outcome. If the Buccaneers have a higher score at that time, then the market shall resolve as YES. If the Buccaneers have a lower score or the score is tied at that time, then the market shall resolve as NO. If the game is still in play at market expiration time and at least 55 minutes of game time have elapsed, then the market shall resolve as YES if the Buccaneers have a higher score at that time and as NO if the Buccaneers have a lower score or if the score is tied",
+      "_scalarDenomination": "",
+      "offsetName": null,
+      "template": null
+    },
+    "YesTokenAddress": "0xD12653380cb0d88ede6Cd8129Ed56FAbCc21928D",
+    "NoTokenAddress": "0x15D4abb1c530A45cFbdDd1a595E7a9d6304f84Cb",
+    "invalidTokenAddress": "0x439D2F9eb74f3183461Ff721275981662c7FBF7F",
+    "yesTokenId": "90886221752113425316723225203180378566721648535128661053147424697289763979264",
+    "noTokenId": "90886221752113425316723225203180378566721648535128351568137603352221039198208",
+    "invalidTokenId": "90886221752113425316723225203180378566721648535128042083127782007152314417152",
+    "yesName": "YES Buccs Win NFC Token",
+    "noName": "NO Buccs Win NFC Token",
+    "invalidName": "INVALID Buccs Win NFC Token",
+    "yesSymbol": "yBUCCS",
+    "noSymbol": "nBUCCS",
+    "invalidSymbol": "iBUCCS",
+    "yesIcon": "",
+    "noIcon": "",
+    "endTime": "1611619200"
   }
 ]
