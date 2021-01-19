@@ -15,9 +15,9 @@ import metaMaskStore from './components/metaMask'
 import { BN, constants } from '@openzeppelin/test-helpers'
 import NumberFormat from 'react-number-format'
 
-import markets from './configs/markets/markets-kovan.json'
+import markets from './configs/markets/markets-mainnet'
 import contracts from './configs/contracts.json'
-import environment from './configs/environments/environment-kovan.json'
+import environment from './configs/environments/environment-mainnet.json'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -136,14 +136,14 @@ export default class App extends PureComponent {
         let chainId = await web3.eth.net.getId()
         console.log('chainId: ' + chainId)
 
-        // if (chainId !== 1) {
-        //     this.openNotification(
-        //         'error',
-        //         'Wrong Network',
-        //         'Please connect to Ethereum mainnet'
-        //     )
-        //     return
-        // }
+        if (chainId !== 1) {
+            this.openNotification(
+                'error',
+                'Wrong Network',
+                'Please connect to Ethereum mainnet'
+            )
+            return
+        }
 
         const OUTCOMES = { INVALID: 0, NO: 1, YES: 2 }
 
@@ -256,24 +256,32 @@ export default class App extends PureComponent {
 
             someData.push(
                 <Row
-                  className="justify-content-md-center"
-                  style={ i === 0 ? { marginTop: "1em"} : {} /* apply margin-top to only the first row so that there is some space between the top of the modal and the first row */}
+                    className="justify-content-md-center"
+                    style={
+                        i === 0
+                            ? { marginTop: '1em' }
+                            : {} /* apply margin-top to only the first row so that there is some space between the top of the modal and the first row */
+                    }
                 >
-                  <Col md="auto">
-                    <Form.Group controlId={'inputAmountModal.ControlInput' + i}>
-                        <Form.Label style={{ color: '#040404' }}>
-                            {outcomeNames[i]}:&nbsp;
-                        </Form.Label>
-                        <Form.Control
-                            type="text"
-                            name={'inputAmount' + i}
-                            placeholder={'Amount of ' + outcomeNames[i] + ' Shares'}
-                            defaultValue={web3.utils.fromWei(balances[i])}
-                            onChange={this.handleChange}
-                            style={{display: 'inline'}}
-                        />
-                    </Form.Group>
-                  </Col>
+                    <Col md="auto">
+                        <Form.Group
+                            controlId={'inputAmountModal.ControlInput' + i}
+                        >
+                            <Form.Label style={{ color: '#040404' }}>
+                                {outcomeNames[i]}:&nbsp;
+                            </Form.Label>
+                            <Form.Control
+                                type="text"
+                                name={'inputAmount' + i}
+                                placeholder={
+                                    'Amount of ' + outcomeNames[i] + ' Shares'
+                                }
+                                defaultValue={web3.utils.fromWei(balances[i])}
+                                onChange={this.handleChange}
+                                style={{ display: 'inline' }}
+                            />
+                        </Form.Group>
+                    </Col>
                 </Row>
             )
         }
@@ -546,14 +554,8 @@ export default class App extends PureComponent {
         let tokenSymbol = await erc20.methods.symbol().call()
 
         let decimals = await erc20.methods.decimals().call()
-        let tokenImage
-        if (outcome === 1) {
-            tokenImage = markets[index].noIcon
-        } else if (outcome === 2) {
-            tokenImage = markets[index].yesIcon
-        } else if (outcome === 0) {
-            tokenImage = null
-        }
+        let tokenImage = markets[index].tokenIcons[outcome]
+
         const provider = window.web3.currentProvider
         provider.sendAsync(
             {
@@ -1191,11 +1193,6 @@ export default class App extends PureComponent {
             //   yesTokenBalance > noTokenBalance ? noTokenBalance : yesTokenBalance;
             this.openNotification('info', 'Unwrapping shares', '')
             if (chainId === 42) {
-                // this.openNotification(
-                //     'error',
-                //     'Unwrapping shares wont work temporirily on kovan',
-                //     ''
-                // )
                 const sendTo = accounts[0]
                 const jsonInterfaceForUpdatedUnwrapMultipleTokens = {
                     inputs: [
@@ -1283,16 +1280,8 @@ export default class App extends PureComponent {
         let noTokenBalance = new BN(0)
 
         if (accounts[0]) {
-            // let {
-            //     invalidTokenAddress,
-            //     yesTokenAddress,
-            //     noTokenAddress,
-            // } = await this.getTokenAddresses(marketAddress)
             const tokenAddresses = await this.getTokenAddresses(marketAddress)
-            // console.log("yesTOkenAddress" + yesTokenAddress);
-            // console.log("accounts{0}" + accounts[0]);
-            // console.log(noTokenAddress);
-            // console.log(yesTokenAddress);
+
             let tokenBalances = []
             for (let i = 0; i < tokenAddresses.length; i++) {
                 const tokenBalance = await this.getBalanceOfERC20(
@@ -1301,7 +1290,7 @@ export default class App extends PureComponent {
                 )
                 tokenBalances.push(tokenBalance)
             }
-            console.log('tokenBalances', tokenBalances)
+            // console.log('tokenBalances', tokenBalances)
             return tokenBalances
         }
     }
@@ -1324,7 +1313,7 @@ export default class App extends PureComponent {
         let tokenIds = await shareToken.methods
             .getTokenIds(marketAddress, outcomeArray)
             .call()
-        console.log('tokenIds', tokenIds)
+        // console.log('tokenIds', tokenIds)
         this.setState({ tokenIds: tokenIds })
         return tokenIds
     }
@@ -1342,7 +1331,7 @@ export default class App extends PureComponent {
                 .call()
             tokenAddresses.push(tokenAddress)
         }
-        console.log('tokenAddresses', tokenAddresses)
+        // console.log('tokenAddresses', tokenAddresses)
 
         return tokenAddresses
     }
@@ -1357,7 +1346,7 @@ export default class App extends PureComponent {
             const tokenSymbol = await erc20.methods.symbol().call()
             tokenSymbols.push(tokenSymbol)
         }
-        console.log('tokenSymbols', tokenSymbols)
+        // console.log('tokenSymbols', tokenSymbols)
 
         return tokenSymbols
     }
@@ -1407,10 +1396,10 @@ export default class App extends PureComponent {
                 )
             }
 
-            console.log(
-                'shareTokenBalancesWithNumTicks',
-                shareTokenBalancesWithNumTicks
-            )
+            // console.log(
+            //     'shareTokenBalancesWithNumTicks',
+            //     shareTokenBalancesWithNumTicks
+            // )
             return shareTokenBalancesWithNumTicks
         }
     }
@@ -1576,9 +1565,9 @@ export default class App extends PureComponent {
                                 <Col xs={4} className="auto">
                                     {this.state.isWrapping ? (
                                         <Button
-                                          variant="danger"
-                                          className="m-left"
-                                          type="submit"
+                                            variant="danger"
+                                            className="m-left"
+                                            type="submit"
                                         >
                                             WRAP SHARES
                                         </Button>
