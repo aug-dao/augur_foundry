@@ -1523,7 +1523,6 @@ export default class App extends PureComponent {
     hideToolTip() {
         this.setState({ isShowToolTip: false })
     }
-
     render() {
         return (
             <Container className="p-3 mainContainer">
@@ -1741,7 +1740,7 @@ export default class App extends PureComponent {
                                     onClick={this.showPoolsModal}
                                 >
                                     <span class="link_emoji">&#128167;</span>
-                                    Balancer Pools
+                                    Liquidity Pools
                                 </a>
                             </li>
                             <li>
@@ -1773,7 +1772,7 @@ export default class App extends PureComponent {
                     onHide={this.hidePoolsModal}
                 >
                     <Modal.Header closeButton>
-                        <Modal.Title>Balancer Pools</Modal.Title>
+                        <Modal.Title>Liquidity Pools</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Row>
@@ -1807,6 +1806,22 @@ export default class App extends PureComponent {
                                     target="_blank"
                                 >
                                     <h5>yBlue/nBlue/DAI: </h5>
+                                </a>
+                            </Col>
+                            <Col>
+                                <a
+                                    href="https://pools.balancer.exchange/#/pool/0x91ffe46e57d7c3f5f6e4f0856f2a674d0d820f93/"
+                                    target="_blank"
+                                >
+                                    <h5>yINAUG/nINAUG/DAI </h5>
+                                </a>
+                            </Col>
+                            <Col>
+                                <a
+                                    href="https://info.uniswap.org/pair/0x1e269130569ec8da6eaeaa4ad55771b57c2bb356"
+                                    target="_blank"
+                                >
+                                    <h5>yKYC/DAI </h5>
                                 </a>
                             </Col>
                         </Row>

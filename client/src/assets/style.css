@@ -52,6 +52,20 @@ body {
   width: auto;
 }
 
+.modal-content form {
+  text-align: left;
+  margin-left: 23%;
+}
+
+.modal-content .form-group {
+  margin-top: 7px;
+}
+
+.qty {
+  display: inline;
+  margin-left: 8px;
+}
+
 .with-info {
   display: flex;
   align-items: center;
@@ -239,11 +253,12 @@ td {
 }
 
 .modal-content {
-  /* padding: 0 0px 50px 100px; */
+ padding-bottom: 14px;
 }
 
 .modal-header {
   color: black;
+  padding: .8rem .8rem; 
 }
 
 .tooltip {
