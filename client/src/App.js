@@ -255,18 +255,26 @@ export default class App extends PureComponent {
             inputAmountKeys.push('inputAmount' + i)
 
             someData.push(
-                <Form.Group controlId={'inputAmountModal.ControlInput' + i}>
-                    <Form.Label style={{ color: '#040404' }}>
-                        {outcomeNames[i]}:{' '}
-                    </Form.Label>
-                    <Form.Control
-                        type="text"
-                        name={'inputAmount' + i}
-                        placeholder={'Amount of ' + outcomeNames[i] + ' Shares'}
-                        defaultValue={web3.utils.fromWei(balances[i])}
-                        onChange={this.handleChange}
-                    />
-                </Form.Group>
+                <Row
+                  className="justify-content-md-center"
+                  style={ i === 0 ? { marginTop: "1em"} : {} /* apply margin-top to only the first row so that there is some space between the top of the modal and the first row */}
+                >
+                  <Col md="auto">
+                    <Form.Group controlId={'inputAmountModal.ControlInput' + i}>
+                        <Form.Label style={{ color: '#040404' }}>
+                            {outcomeNames[i]}:&nbsp;
+                        </Form.Label>
+                        <Form.Control
+                            type="text"
+                            name={'inputAmount' + i}
+                            placeholder={'Amount of ' + outcomeNames[i] + ' Shares'}
+                            defaultValue={web3.utils.fromWei(balances[i])}
+                            onChange={this.handleChange}
+                            style={{display: 'inline'}}
+                        />
+                    </Form.Group>
+                  </Col>
+                </Row>
             )
         }
 
@@ -372,7 +380,7 @@ export default class App extends PureComponent {
                         </OverlayTrigger>
                         <td>
                             {outcomeNames.map((outcomeName, index) => (
-                                <span>
+                                <span key={`${outcomeName}-${index}`}>
                                     {outcomeName}:{' '}
                                     {web3.utils
                                         .fromWei(shareTokenBalances[index])
@@ -383,7 +391,7 @@ export default class App extends PureComponent {
                         </td>
                         <td>
                             {erc20Symbols.map((erc20Symbol, index) => (
-                                <span>
+                                <span key={`${erc20Symbol}-${index}`}>
                                     {erc20Symbol}:{' '}
                                     {web3.utils
                                         .fromWei(wrappedBalances[index])
@@ -1563,11 +1571,15 @@ export default class App extends PureComponent {
                     <Modal show={this.state.show} onHide={this.hideModal}>
                         <Modal.Header closeButton> </Modal.Header>
                         <Form onSubmit={this.onModalSubmit}>
-                            <Row>
-                                {this.state.someData}
-                                <Col xs={4}>
+                            {this.state.someData}
+                            <Row className="justify-content-md-center">
+                                <Col xs={4} className="auto">
                                     {this.state.isWrapping ? (
-                                        <Button variant="danger" type="submit">
+                                        <Button
+                                          variant="danger"
+                                          className="m-left"
+                                          type="submit"
+                                        >
                                             WRAP SHARES
                                         </Button>
                                     ) : (
