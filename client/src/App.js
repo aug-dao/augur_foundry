@@ -1,36 +1,36 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent } from 'react';
 
-import Row from 'react-bootstrap/Row'
-import Table from 'react-bootstrap/Table'
-import Form from 'react-bootstrap/Form'
-import Col from 'react-bootstrap/Col'
-import Jumbotron from 'react-bootstrap/Jumbotron'
-import Container from 'react-bootstrap/Container'
-import Button from 'react-bootstrap/Button'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Popover from 'react-bootstrap/Popover'
-import { Modal, Tooltip } from 'react-bootstrap'
+import Row from 'react-bootstrap/Row';
+import Table from 'react-bootstrap/Table';
+import Form from 'react-bootstrap/Form';
+import Col from 'react-bootstrap/Col';
+import Jumbotron from 'react-bootstrap/Jumbotron';
+import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+import { Modal, Tooltip } from 'react-bootstrap';
 
-import metaMaskStore from './components/metaMask'
-import { BN, constants } from '@openzeppelin/test-helpers'
-import NumberFormat from 'react-number-format'
+import metaMaskStore from './components/metaMask';
+import { BN, constants } from '@openzeppelin/test-helpers';
+import NumberFormat from 'react-number-format';
 
-import markets from './configs/markets/markets-mainnet'
-import contracts from './configs/contracts.json'
-import environment from './configs/environments/environment-mainnet.json'
+import markets from './configs/markets/markets-mainnet';
+import contracts from './configs/contracts.json';
+import environment from './configs/environments/environment-mainnet.json';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { notification } from 'antd'
-import 'antd/dist/antd.css'
+import { notification } from 'antd';
+import 'antd/dist/antd.css';
 export default class App extends PureComponent {
     constructor(props) {
-        super(props)
-        this.mintDaiForm = this.mintDaiForm.bind(this)
-        this.setMarket = this.setMarket.bind(this)
-        this.onModalSubmit = this.onModalSubmit.bind(this)
-        this.showToolTip = this.showToolTip.bind(this)
-        this.hideToolTip = this.hideToolTip.bind(this)
+        super(props);
+        this.mintDaiForm = this.mintDaiForm.bind(this);
+        this.setMarket = this.setMarket.bind(this);
+        this.onModalSubmit = this.onModalSubmit.bind(this);
+        this.showToolTip = this.showToolTip.bind(this);
+        this.hideToolTip = this.hideToolTip.bind(this);
         //this.parseDate = this.parseDate.bind(this);
         this.state = {
             web3Provider: {
@@ -50,49 +50,49 @@ export default class App extends PureComponent {
             selectedMarket: null,
             isShowPools: false,
             isShowToolTip: false,
-        }
+        };
     }
 
     componentWillMount() {
-        metaMaskStore.checkWeb3(true)
+        metaMaskStore.checkWeb3(true);
         metaMaskStore.on(
             'META_MASK_CONNECTED',
             this.metaMaskConnected.bind(this)
-        )
+        );
         metaMaskStore.on(
             'META_MASK_ADDRESS_CHANGED',
             this.metaAddressChange.bind(this)
-        )
+        );
         metaMaskStore.on(
             'META_MASK_NETWORK_CHANGED',
             this.metaNetwrokChange.bind(this)
-        )
+        );
     }
     componentWillUnmount() {
         metaMaskStore.removeListener(
             'META_MASK_CONNECTED',
             this.metaMaskConnected.bind(this)
-        )
+        );
         metaMaskStore.removeListener(
             'META_MASK_ADDRESS_CHANGED',
             this.metaAddressChange.bind(this)
-        )
+        );
         metaMaskStore.removeListener(
             'META_MASK_NETWORK_CHANGED',
             this.metaNetwrokChange.bind(this)
-        )
+        );
     }
 
     setMarket(e) {
         if (e.target.value == 0) {
-            this.setState({ selectedMarket: null })
+            this.setState({ selectedMarket: null });
         } else {
             let currentMarket = markets.find(
                 (item) => item.address === e.target.value
-            )
+            );
             this.setState({
                 selectedMarket: currentMarket,
-            })
+            });
         }
     }
 
@@ -109,112 +109,112 @@ export default class App extends PureComponent {
 
     metaMaskConnected() {
         this.setState({ web3Provider: metaMaskStore.getWeb3() }, () => {
-            this.initData()
-        })
+            this.initData();
+        });
     }
 
     metaAddressChange() {
         this.setState({ web3Provider: metaMaskStore.getWeb3() }, () => {
-            this.initData()
-        })
+            this.initData();
+        });
     }
 
     metaNetwrokChange() {
         this.setState({ web3Provider: metaMaskStore.getWeb3() }, () => {
             // this.initData();
-        })
+        });
     }
 
     async initData() {
-        console.log('initData')
+        console.log('initData');
         // notification.open({
         //   message: "Please Wait",
         // });
 
-        const { web3 } = this.state.web3Provider
+        const { web3 } = this.state.web3Provider;
 
-        let chainId = await web3.eth.net.getId()
-        console.log('chainId: ' + chainId)
+        let chainId = await web3.eth.net.getId();
+        console.log('chainId: ' + chainId);
 
         if (chainId !== 1) {
             this.openNotification(
                 'error',
                 'Wrong Network',
                 'Please connect to Ethereum mainnet'
-            )
-            return
+            );
+            return;
         }
 
-        const OUTCOMES = { INVALID: 0, NO: 1, YES: 2 }
+        const OUTCOMES = { INVALID: 0, NO: 1, YES: 2 };
 
         const cash = new web3.eth.Contract(
             contracts.contracts['Cash.sol'].Cash.abi,
             environment.addresses.Cash
-        )
+        );
         const erc20 = new web3.eth.Contract(
             contracts.contracts['Cash.sol'].Cash.abi
-        )
+        );
 
         const shareToken = new web3.eth.Contract(
             contracts.contracts['reporting/ShareToken.sol'].ShareToken.abi,
             environment.addresses.ShareToken
-        )
+        );
 
         const market = new web3.eth.Contract(
             contracts.contracts['reporting/Market.sol'].Market.abi
-        )
+        );
 
         const augurFoundry = new web3.eth.Contract(
             contracts.contracts['AugurFoundry.sol'].AugurFoundry.abi,
             markets[0].augurFoundryAddress
-        )
+        );
 
         const universe = new web3.eth.Contract(
             contracts.contracts['reporting/Universe.sol'].Universe.abi,
             environment.addresses.Universe
-        )
+        );
 
         const augur = new web3.eth.Contract(
             contracts.contracts['Augur.sol'].Augur.abi,
             environment.addresses.Augur
-        )
+        );
         const erc20Wrapper = new web3.eth.Contract(
             contracts.contracts['ERC20Wrapper.sol'].ERC20Wrapper.abi
-        )
+        );
         let totalOIWei = new BN(
             await universe.methods.getOpenInterestInAttoCash().call()
-        )
+        );
 
         // let totalOIEth = web3.utils.fromWei(totalOIWei);
         // //This is a hack for precision when dealing with bignumber
         // let n = totalOIEth.indexOf(".");
         // let totalOI = totalOIEth.substring(0, n != -1 ? n + 3 : totalOIEth.length);
-        console.log(web3.utils.fromWei(totalOIWei).toString())
-        let foundryTVLWei = new BN(0)
+        console.log(web3.utils.fromWei(totalOIWei).toString());
+        let foundryTVLWei = new BN(0);
         for (let i = 0; i < markets.length; i++) {
-            market.options.address = markets[i].address
+            market.options.address = markets[i].address;
             foundryTVLWei = foundryTVLWei.add(
                 new BN(await market.methods.getOpenInterest().call())
-            )
+            );
         }
-        let foundryTVLEth = web3.utils.fromWei(foundryTVLWei)
+        let foundryTVLEth = web3.utils.fromWei(foundryTVLWei);
         //This is a hack for precision when dealing with bignumber
-        let n = foundryTVLEth.indexOf('.')
+        let n = foundryTVLEth.indexOf('.');
         let foundryTVL = foundryTVLEth.substring(
             0,
             n !== -1 ? n + 3 : foundryTVLEth.length
-        )
+        );
         let foundryPecentageWei = foundryTVLWei
             .mul(new BN(10).pow(new BN(20)))
-            .div(totalOIWei)
+            .div(totalOIWei);
 
-        let foundryPecentageEth = web3.utils.fromWei(foundryPecentageWei)
+        let foundryPecentageEth = web3.utils.fromWei(foundryPecentageWei);
         //This is a hack for precision when dealing with bignumber
-        n = foundryPecentageEth.indexOf('.')
+        n = foundryPecentageEth.indexOf('.');
         let foundryPecentage = foundryPecentageEth.substring(
             0,
             n !== -1 ? n + 3 : foundryPecentageEth.length
-        )
+        );
 
         this.setState(
             {
@@ -234,25 +234,25 @@ export default class App extends PureComponent {
                 chainId: chainId,
             },
             () => {
-                this.invetoryInit()
+                this.invetoryInit();
             }
-        )
+        );
         // notification.destroy();
     }
     showModal = async (marketAddress, isWrapping, balances, outcomeNames) => {
-        const { web3 } = this.state.web3Provider
-        const { markets } = this.state
-        console.log('showModal')
+        const { web3 } = this.state.web3Provider;
+        const { markets } = this.state;
+        console.log('showModal');
 
-        const tokenIds = await this.getTokenIds(marketAddress)
+        const tokenIds = await this.getTokenIds(marketAddress);
 
-        let defaultInputAmounts = []
-        let inputAmountKeys = []
+        let defaultInputAmounts = [];
+        let inputAmountKeys = [];
 
-        let someData = []
+        let someData = [];
         for (let i = 0; i < tokenIds.length; i++) {
-            defaultInputAmounts.push(web3.utils.fromWei(balances[i]))
-            inputAmountKeys.push('inputAmount' + i)
+            defaultInputAmounts.push(web3.utils.fromWei(balances[i]));
+            inputAmountKeys.push('inputAmount' + i);
 
             someData.push(
                 <Row
@@ -283,7 +283,7 @@ export default class App extends PureComponent {
                         </Form.Group>
                     </Col>
                 </Row>
-            )
+            );
         }
 
         this.setState({
@@ -291,45 +291,45 @@ export default class App extends PureComponent {
             isWrapping: isWrapping,
             someData: someData,
             show: true,
-        })
-    }
+        });
+    };
 
     hideModal = () => {
-        this.setState({ show: false })
-    }
+        this.setState({ show: false });
+    };
 
     hidePoolsModal = () => {
-        this.setState({ isShowPools: false })
-    }
+        this.setState({ isShowPools: false });
+    };
 
     showPoolsModal = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        this.setState({ isShowPools: true })
-    }
+        e.preventDefault();
+        e.stopPropagation();
+        this.setState({ isShowPools: true });
+    };
 
     async invetoryInit() {
-        const { web3 } = this.state.web3Provider
-        const { OUTCOMES, erc20, show, chainId } = this.state
-        let listData = []
+        const { web3 } = this.state.web3Provider;
+        const { OUTCOMES, erc20, show, chainId } = this.state;
+        let listData = [];
         // let yesTokenAddresses = [];
         // let noTokenAddress = [];
         // console.log(markets);
-        this.openNotification('info', 'Updating Markets...', '', 5)
+        this.openNotification('info', 'Updating Markets...', '', 5);
         for (let x = 0; x < markets.length; x++) {
             // for (let x = 0; x < 1; x++) {
             // for (let x = markets.length - 1; x < markets.length; x++) {
             // let x = 0;
             const wrappedBalances = await this.getBalancesMarketERC20(
                 markets[x].address
-            )
+            );
 
             const tokenAddresses = await this.getTokenAddresses(
                 markets[x].address
-            )
+            );
 
-            let decimals = new BN(15)
-            let multiplier = new BN(3)
+            let decimals = new BN(15);
+            let multiplier = new BN(3);
 
             // if (chainId == 42) {
             //     multiplier = new BN(2)
@@ -337,7 +337,7 @@ export default class App extends PureComponent {
             for (let i = 0; i < wrappedBalances.length; i++) {
                 wrappedBalances[i] = wrappedBalances[i].mul(
                     new BN(10).pow(multiplier)
-                )
+                );
             }
             // wrappedBalances.invalidTokenBalance = wrappedBalances.invalidTokenBalance.mul(
             //     new BN(10).pow(multiplier)
@@ -351,26 +351,26 @@ export default class App extends PureComponent {
 
             let shareTokenBalances = await this.getBalancesMarketShareToken(
                 markets[x].address
-            )
+            );
             let isMoreThanZeroShares = await this.checkIfMoreThanZeroShares(
                 shareTokenBalances
-            )
+            );
             let isMoreThanZeroERC20s = await this.checkIfMoreThanZeroERC20s(
                 wrappedBalances
-            )
+            );
             let marketFinalized = await this.isMarketFinalized(
                 markets[x].address
-            )
+            );
 
-            let erc20Symbols = await this.getERC20Symbols(markets[x].address)
+            let erc20Symbols = await this.getERC20Symbols(markets[x].address);
             // console.log(isMoreThanZeroShares);
             // console.log(isMoreThanZeroERC20s);
             // console.log(x);
             let isMarketsToBeDisplayed =
-                isMoreThanZeroERC20s || isMoreThanZeroShares
-            console.log('displayOfMarket', x, isMarketsToBeDisplayed)
+                isMoreThanZeroERC20s || isMoreThanZeroShares;
+            console.log('displayOfMarket', x, isMarketsToBeDisplayed);
 
-            const outcomeNames = markets[x].outcomeStrings
+            const outcomeNames = markets[x].outcomeStrings;
             if (isMarketsToBeDisplayed) {
                 // if (true) {
                 listData.push(
@@ -444,119 +444,119 @@ export default class App extends PureComponent {
                                         </Button>
                                     </span>
                                 ) : isMoreThanZeroShares &&
-                                  isMoreThanZeroERC20s ? (
-                                    <span>
-                                        <Button
-                                            variant="success"
-                                            className="m-left"
-                                            type="submit"
-                                            onClick={(e) =>
-                                                this.showModal(
-                                                    markets[x].address,
-                                                    false,
-                                                    wrappedBalances,
-                                                    outcomeNames
-                                                )
-                                            }
-                                        >
-                                            UNWRAP
+                                    isMoreThanZeroERC20s ? (
+                                            <span>
+                                                <Button
+                                                    variant="success"
+                                                    className="m-left"
+                                                    type="submit"
+                                                    onClick={(e) =>
+                                                        this.showModal(
+                                                            markets[x].address,
+                                                            false,
+                                                            wrappedBalances,
+                                                            outcomeNames
+                                                        )
+                                                    }
+                                                >
+                                                    UNWRAP
                                         </Button>
-                                        <Button
-                                            variant="danger"
-                                            type="submit"
-                                            onClick={(e) =>
-                                                this.showModal(
-                                                    markets[x].address,
-                                                    true,
-                                                    shareTokenBalances,
-                                                    outcomeNames
-                                                )
-                                            }
-                                        >
-                                            WRAP SHARES
+                                                <Button
+                                                    variant="danger"
+                                                    type="submit"
+                                                    onClick={(e) =>
+                                                        this.showModal(
+                                                            markets[x].address,
+                                                            true,
+                                                            shareTokenBalances,
+                                                            outcomeNames
+                                                        )
+                                                    }
+                                                >
+                                                    WRAP SHARES
                                         </Button>
 
-                                        <Button
-                                            variant="secondary"
-                                            className="m-left"
-                                            type="submit"
-                                            onClick={(e) =>
-                                                this.redeemDAI(
-                                                    markets[x].address
-                                                )
-                                            }
-                                        >
-                                            REDEEM DAI
+                                                <Button
+                                                    variant="secondary"
+                                                    className="m-left"
+                                                    type="submit"
+                                                    onClick={(e) =>
+                                                        this.redeemDAI(
+                                                            markets[x].address
+                                                        )
+                                                    }
+                                                >
+                                                    REDEEM DAI
                                         </Button>
-                                    </span>
-                                ) : isMoreThanZeroERC20s ? (
-                                    <Button
-                                        variant="success"
-                                        type="submit"
-                                        onClick={(e) =>
-                                            this.showModal(
-                                                markets[x].address,
-                                                false,
-                                                wrappedBalances,
-                                                outcomeNames
+                                            </span>
+                                        ) : isMoreThanZeroERC20s ? (
+                                            <Button
+                                                variant="success"
+                                                type="submit"
+                                                onClick={(e) =>
+                                                    this.showModal(
+                                                        markets[x].address,
+                                                        false,
+                                                        wrappedBalances,
+                                                        outcomeNames
+                                                    )
+                                                }
+                                            >
+                                                UNWRAP
+                                            </Button>
+                                        ) : (
+                                                <span>
+                                                    <Button
+                                                        variant="danger"
+                                                        type="submit"
+                                                        onClick={(e) =>
+                                                            this.showModal(
+                                                                markets[x].address,
+                                                                true,
+                                                                shareTokenBalances,
+                                                                outcomeNames
+                                                            )
+                                                        }
+                                                    >
+                                                        WRAP SHARES
+                                        </Button>
+                                                    <Button
+                                                        variant="secondary"
+                                                        className="m-left"
+                                                        type="submit"
+                                                        onClick={(e) =>
+                                                            this.redeemDAI(
+                                                                markets[x].address,
+                                                                true
+                                                            )
+                                                        }
+                                                    >
+                                                        REDEEM DAI
+                                        </Button>
+                                                </span>
                                             )
-                                        }
-                                    >
-                                        UNWRAP
-                                    </Button>
-                                ) : (
-                                    <span>
-                                        <Button
-                                            variant="danger"
-                                            type="submit"
-                                            onClick={(e) =>
-                                                this.showModal(
-                                                    markets[x].address,
-                                                    true,
-                                                    shareTokenBalances,
-                                                    outcomeNames
-                                                )
-                                            }
-                                        >
-                                            WRAP SHARES
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            className="m-left"
-                                            type="submit"
-                                            onClick={(e) =>
-                                                this.redeemDAI(
-                                                    markets[x].address,
-                                                    true
-                                                )
-                                            }
-                                        >
-                                            REDEEM DAI
-                                        </Button>
-                                    </span>
-                                )
                             ) : (
-                                <span></span>
-                            )}
+                                    <span></span>
+                                )}
                         </td>
                     </tr>
-                )
+                );
             }
         }
         //console.log(listData)
-        this.setState({ listData: listData })
+        this.setState({ listData: listData });
     }
 
     async addTokenToMetamask(tokenAddress, index, outcome) {
-        const { erc20 } = this.state
-        erc20.options.address = tokenAddress
+        const { erc20 } = this.state;
+        erc20.options.address = tokenAddress;
 
-        let tokenSymbol = await erc20.methods.symbol().call()
+        let tokenSymbol = await erc20.methods.symbol().call();
 
-        let decimals = await erc20.methods.decimals().call()
-        let tokenImage = markets[index].tokenIcons[outcome]
+        let decimals = await erc20.methods.decimals().call();
+        let tokenImage = markets[index].tokenIcons[outcome];
 
-        const provider = window.web3.currentProvider
+        const provider = window.ethereum;
         provider.sendAsync(
             {
                 method: 'metamask_watchAsset',
@@ -572,7 +572,7 @@ export default class App extends PureComponent {
                 id: Math.round(Math.random() * 100000),
             },
             (err, added) => {
-                console.log('provider returned', err, added)
+                console.log('provider returned', err, added);
                 if (err || 'error' in added) {
                     // this.setState({
                     //   errorMessage: "There was a problem adding the token.",
@@ -582,42 +582,42 @@ export default class App extends PureComponent {
                         'error',
                         'There was an error in adding the custom token in metamask',
                         ''
-                    )
-                    return
+                    );
+                    return;
                 }
                 // this.setState({
                 //   message: "Token added!",
                 //   errorMessage: "",
                 // });
-                console.log('suceesfull')
+                console.log('suceesfull');
             }
-        )
+        );
     }
 
     async mintDaiForm(e) {
-        e.preventDefault()
-        const { web3, accounts } = this.state.web3Provider
+        e.preventDefault();
+        const { web3, accounts } = this.state.web3Provider;
 
-        const { cash, shareToken, market, augur } = this.state
+        const { cash, shareToken, market, augur } = this.state;
 
-        const marketAddress = e.target.elements.marketIds.value
+        const marketAddress = e.target.elements.marketIds.value;
         //Here the amount is the amoun of DAI users wants to spend to buy shares
-        let amount = e.target.elements.amount.value
+        let amount = e.target.elements.amount.value;
 
         // const daiBalance = await daiInstance.methods.balanceOf(accounts[0]).call();
 
         //NOTE : remove inconsitencies in new BN
         if (web3.utils.isAddress(marketAddress) && amount) {
-            let weiAmount = web3.utils.toWei(amount)
-            weiAmount = new BN(weiAmount)
-            market.options.address = marketAddress
+            let weiAmount = web3.utils.toWei(amount);
+            weiAmount = new BN(weiAmount);
+            market.options.address = marketAddress;
             let balance = new BN(
                 await cash.methods.balanceOf(accounts[0]).call()
-            )
-            let numTicks = new BN(await market.methods.getNumTicks().call())
-            console.log('numTicks: ' + numTicks)
+            );
+            let numTicks = new BN(await market.methods.getNumTicks().call());
+            console.log('numTicks: ' + numTicks);
 
-            let amountOfShareToBuy = weiAmount.div(numTicks)
+            let amountOfShareToBuy = weiAmount.div(numTicks);
             // console.log(web3.utils.fromWei(amountOfShareToBuy));
 
             //user is inouting how much DAI they want to spend
@@ -625,23 +625,23 @@ export default class App extends PureComponent {
             if (weiAmount.cmp(balance) == 1) {
                 //weiAmount > balance
                 //await Promise.reject(new Error("Not Enough balance to buy complete sets"));
-                this.openNotification('error', 'Not Enough DAI Balance', '')
-                return
+                this.openNotification('error', 'Not Enough DAI Balance', '');
+                return;
             }
 
             let allowance = new BN(
                 await cash.methods
                     .allowance(accounts[0], augur.options.address)
                     .call()
-            )
+            );
 
             if (weiAmount.cmp(allowance) == 1) {
-                console.log('allowance')
+                console.log('allowance');
                 this.openNotification(
                     'info',
                     'Approve your DAI to before minting new shares',
                     'This is one time transaction'
-                )
+                );
                 cash.methods
                     .approve(
                         augur.options.address,
@@ -649,13 +649,13 @@ export default class App extends PureComponent {
                     )
                     .send({ from: accounts[0] })
                     .on('receipt', (receipt) => {
-                        console.log('Before buy complete sets')
+                        console.log('Before buy complete sets');
                         this.openNotification(
                             'info',
                             'Approval Successfull',
                             'Now we can mint shares for you'
-                        )
-                        this.openNotification('info', 'Minting shares', '')
+                        );
+                        this.openNotification('info', 'Minting shares', '');
                         shareToken.methods
                             .buyCompleteSets(
                                 marketAddress,
@@ -668,8 +668,8 @@ export default class App extends PureComponent {
                                     'success',
                                     'Shares minted successfully',
                                     ''
-                                )
-                                this.initData()
+                                );
+                                this.initData();
                             })
                             .on('error', (error) => {
                                 if (
@@ -681,15 +681,15 @@ export default class App extends PureComponent {
                                         'error',
                                         'User denied signature',
                                         'sign the transaction to be able to execute the transaction'
-                                    )
+                                    );
                                 } else {
                                     this.openNotification(
                                         'error',
                                         'There was an error in executing the transaction',
                                         ''
-                                    )
+                                    );
                                 }
-                            })
+                            });
                     })
                     .on('error', (error) => {
                         if (
@@ -701,17 +701,17 @@ export default class App extends PureComponent {
                                 'error',
                                 'User denied signature',
                                 'sign the transaction to be able to execute the transaction'
-                            )
+                            );
                         } else {
                             this.openNotification(
                                 'error',
                                 'There was an error in executing the transaction',
                                 ''
-                            )
+                            );
                         }
-                    })
+                    });
             } else {
-                this.openNotification('info', 'Minting shares', '')
+                this.openNotification('info', 'Minting shares', '');
                 // console.log(marketAddress);
                 //buy the complete sets
                 shareToken.methods
@@ -726,8 +726,8 @@ export default class App extends PureComponent {
                             'success',
                             'Shares minted successfully',
                             ''
-                        )
-                        this.initData()
+                        );
+                        this.initData();
                     })
                     .on('error', (error) => {
                         if (
@@ -739,22 +739,22 @@ export default class App extends PureComponent {
                                 'error',
                                 'User denied signature',
                                 'sign the transaction to be able to execute the transaction'
-                            )
+                            );
                         } else {
                             this.openNotification(
                                 'error',
                                 'There was an error in executing the transaction',
                                 ''
-                            )
+                            );
                         }
-                    })
+                    });
             }
         } else {
             this.openNotification(
                 'error',
                 'Select a Market and Enter   amount',
                 ''
-            )
+            );
         }
 
         // await this.initData();
@@ -763,54 +763,54 @@ export default class App extends PureComponent {
     async wrapShare(marketAddress, shareTokenAmounts) {
         // alert(marketAddress);
         if (marketAddress) {
-            const { accounts } = this.state.web3Provider
-            const { shareToken, augurFoundry, OUTCOMES } = this.state
+            const { accounts } = this.state.web3Provider;
+            const { shareToken, augurFoundry, OUTCOMES } = this.state;
 
             let isApprovedForAllToAugurFoundry = await shareToken.methods
                 .isApprovedForAll(accounts[0], augurFoundry.options.address)
-                .call()
+                .call();
             const hasEnough = await this.hasEnoughShareTokens(
                 marketAddress,
                 shareTokenAmounts
-            )
-            console.log('hasEnough', hasEnough)
+            );
+            console.log('hasEnough', hasEnough);
 
             if (!hasEnough) {
                 this.openNotification(
                     'error',
                     'Trying to Wrap more than you have',
                     ''
-                )
-                return
+                );
+                return;
             }
 
-            let tokenIds = await this.getTokenIds(marketAddress)
-            let shareTokenAmountsTobeConsidered = []
-            let tokenIdsTobeConsidered = []
+            let tokenIds = await this.getTokenIds(marketAddress);
+            let shareTokenAmountsTobeConsidered = [];
+            let tokenIdsTobeConsidered = [];
 
             // let tokenIds = []
 
             for (let i = 0; i < tokenIds.length; i++) {
                 if (!shareTokenAmounts[i].isZero()) {
-                    tokenIdsTobeConsidered.push(tokenIds[i])
+                    tokenIdsTobeConsidered.push(tokenIds[i]);
                     shareTokenAmountsTobeConsidered.push(
                         shareTokenAmounts[i].toString()
-                    )
+                    );
                 }
             }
             console.log(
                 'shareTokenAmountsTobeConsidered',
                 shareTokenAmountsTobeConsidered
-            )
+            );
             // console.log(amount);
-            console.log('before Wrapping')
+            console.log('before Wrapping');
 
             if (!isApprovedForAllToAugurFoundry) {
                 this.openNotification(
                     'info',
                     'Approve your share tokens to be able to wrap shares',
                     ''
-                )
+                );
                 await shareToken.methods
                     .setApprovalForAll(augurFoundry.options.address, true)
                     .send({ from: accounts[0] })
@@ -819,7 +819,7 @@ export default class App extends PureComponent {
                             'info',
                             'Approval successful',
                             'Now we can wrap shares'
-                        )
+                        );
                     })
                     .on('error', (error) => {
                         if (
@@ -831,17 +831,17 @@ export default class App extends PureComponent {
                                 'error',
                                 'User denied signature',
                                 'sign the transaction to be able to execute the transaction'
-                            )
+                            );
                         } else {
                             this.openNotification(
                                 'error',
                                 'There was an error in executing the transaction',
                                 ''
-                            )
+                            );
                         }
-                    })
+                    });
             }
-            this.openNotification('info', 'Wrapping your shares', '')
+            this.openNotification('info', 'Wrapping your shares', '');
 
             //wrapp all the tokens
             augurFoundry.methods
@@ -852,8 +852,8 @@ export default class App extends PureComponent {
                 )
                 .send({ from: accounts[0] })
                 .on('receipt', (receipt) => {
-                    this.openNotification('success', 'Wrapping successful', '')
-                    this.initData()
+                    this.openNotification('success', 'Wrapping successful', '');
+                    this.initData();
                 })
                 .on('error', (error) => {
                     if (
@@ -865,35 +865,35 @@ export default class App extends PureComponent {
                             'error',
                             'User denied signature',
                             'sign the transaction to be able to execute the transaction'
-                        )
+                        );
                     } else {
                         this.openNotification(
                             'error',
                             'There was an error in executing the transaction',
                             ''
-                        )
+                        );
                     }
-                })
+                });
         }
         // await this.initData();
     }
     async redeemDAI(marketAddress) {
         //check if market has finalized if it has call the claim trading proceeds
         //if not call the buy completeshares
-        const { web3, accounts } = this.state.web3Provider
-        const { shareToken, augurFoundry, OUTCOMES, market } = this.state
+        const { web3, accounts } = this.state.web3Provider;
+        const { shareToken, augurFoundry, OUTCOMES, market } = this.state;
         if (marketAddress) {
-            let isMarketFinalized = await this.isMarketFinalized(marketAddress)
+            let isMarketFinalized = await this.isMarketFinalized(marketAddress);
 
             //end a market to do this
             if (isMarketFinalized) {
-                console.log('claiming trading proceeds')
+                console.log('claiming trading proceeds');
                 //last arg is for fingerprint that has something to do with affiliate fees(NOTE: what exactly?)
                 this.openNotification(
                     'info',
                     'Redeeming winning shares for DAI',
                     ' '
-                )
+                );
                 //Add a check that user has the complete shares
                 //i.e. balanceofShareTOken for YES/NO/INVALID should be greater then zero
 
@@ -909,8 +909,8 @@ export default class App extends PureComponent {
                             'success',
                             'DAI redeemed successfully',
                             ''
-                        )
-                        this.initData()
+                        );
+                        this.initData();
                     })
                     .on('error', (error) => {
                         if (
@@ -922,27 +922,27 @@ export default class App extends PureComponent {
                                 'error',
                                 'User denied signature',
                                 'sign the transaction to be able to execute the transaction'
-                            )
+                            );
                         } else {
                             this.openNotification(
                                 'error',
                                 'There was an error in executing the transaction',
                                 ''
-                            )
+                            );
                         }
-                    })
+                    });
             } else {
                 // //here check the minimum of token balances
 
-                market.options.address = marketAddress
+                market.options.address = marketAddress;
                 const numOfOutcomes = await market.methods
                     .getNumberOfOutcomes()
-                    .call() // console.log('num of outcomes', numOfOutcomes)
+                    .call(); // console.log('num of outcomes', numOfOutcomes)
 
                 const outcomeArray = Array.from(
                     { length: numOfOutcomes },
                     (_, i) => i
-                )
+                );
 
                 let amount = new BN(
                     await shareToken.methods
@@ -952,23 +952,23 @@ export default class App extends PureComponent {
                             accounts[0]
                         )
                         .call()
-                )
+                );
                 // let amount = new BN()
-                console.log('lowestBalance', amount.toString())
+                console.log('lowestBalance', amount.toString());
                 if (amount.cmp(new BN(0)) === 0) {
                     this.openNotification(
                         'error',
                         'Not enough Balance',
                         'You need shares of every outcome(YES/NO/INVALID) to be able to redeem DAI'
-                    )
-                    return
+                    );
+                    return;
                 }
 
                 this.openNotification(
                     'info',
                     'Redeeming your shares for DAI',
                     ''
-                )
+                );
                 shareToken.methods
                     .sellCompleteSets(
                         marketAddress,
@@ -983,8 +983,8 @@ export default class App extends PureComponent {
                             'success',
                             'DAI redeemed successfully',
                             ''
-                        )
-                        this.initData()
+                        );
+                        this.initData();
                     })
                     .on('error', (error) => {
                         if (
@@ -996,48 +996,48 @@ export default class App extends PureComponent {
                                 'error',
                                 'User denied signature',
                                 'sign the transaction to be able to execute the transaction'
-                            )
+                            );
                         } else {
                             this.openNotification(
                                 'error',
                                 'There was an error in executing the transaction',
                                 ''
-                            )
+                            );
                         }
-                    })
+                    });
             }
         }
     } // await this.initData();
     async claimWinningsWhenWrapped(marketAddress) {
-        const { web3, accounts } = this.state.web3Provider
+        const { web3, accounts } = this.state.web3Provider;
         const {
             shareToken,
             augurFoundry,
             market,
             OUTCOMES,
             erc20Wrapper,
-        } = this.state
+        } = this.state;
         //check if the market has finalized
-        market.options.address = marketAddress
+        market.options.address = marketAddress;
         if (await market.methods.isFinalized().call()) {
             //get the winning outcome
-            let numTicks = new BN(await market.methods.getNumTicks().call())
-            let tokenIds = await this.getTokenIds(marketAddress)
-            const numOfOutcomes = await this.getNumberOfOutcomes(marketAddress)
+            let numTicks = new BN(await market.methods.getNumTicks().call());
+            let tokenIds = await this.getTokenIds(marketAddress);
+            const numOfOutcomes = await this.getNumberOfOutcomes(marketAddress);
 
-            let i
+            let i;
             const outcomeArray = Array.from(
                 { length: numOfOutcomes },
                 (_, i) => i
-            )
+            );
             for (i in tokenIds) {
                 // console.log("before calling winnign payout");
-                const outcome = outcomeArray[i]
+                const outcome = outcomeArray[i];
                 let winningPayoutNumerator = new BN(
                     await market.methods
                         .getWinningPayoutNumerator(outcome)
                         .call()
-                )
+                );
                 // console.log("winningPayoutNumerator: " + winningPayoutNumerator);
                 // console.log("numTicks: " + numTicks);
                 if (winningPayoutNumerator.cmp(numTicks) == 0) {
@@ -1045,36 +1045,36 @@ export default class App extends PureComponent {
 
                     erc20Wrapper.options.address = await augurFoundry.methods
                         .wrappers(tokenIds[i])
-                        .call()
+                        .call();
                     //no claim for the user
                     // if(winningOutcome balance is zero then redeem DAI by selling ERC1155s)
                     let balanceOfWinningOutcomeWrapped = await this.getBalanceOfERC20(
                         erc20Wrapper.options.address,
                         accounts[0]
-                    )
+                    );
                     // console.log(balanceOfWinningOutcomeWrapped.toString());
                     if (balanceOfWinningOutcomeWrapped.cmp(new BN(0)) == 0) {
-                        console.log('redeem DAI called')
+                        console.log('redeem DAI called');
                         let shareTokenBalances = await this.getBalancesMarketShareToken(
                             marketAddress
-                        )
+                        );
                         if (
                             await this.checkIfMoreThanZeroShares(
                                 shareTokenBalances
                             )
                         ) {
-                            this.redeemDAI(marketAddress)
+                            this.redeemDAI(marketAddress);
                         } else {
                             this.openNotification(
                                 'error',
                                 'You do not have the winnng outcome shares',
                                 ''
-                            )
+                            );
                         }
 
                         //try to sell by calling the shareToken method directly
                     } else {
-                        console.log('redeem not DAI called')
+                        console.log('redeem not DAI called');
                         erc20Wrapper.methods
                             .claim(accounts[0])
                             .send({ from: accounts[0] })
@@ -1083,8 +1083,8 @@ export default class App extends PureComponent {
                                     'success',
                                     'DAI redeemed successfully',
                                     ''
-                                )
-                                this.initData()
+                                );
+                                this.initData();
                             })
                             .on('error', (error) => {
                                 if (
@@ -1096,15 +1096,15 @@ export default class App extends PureComponent {
                                         'error',
                                         'User denied signature',
                                         'sign the transaction to be able to execute the transaction'
-                                    )
+                                    );
                                 } else {
                                     this.openNotification(
                                         'error',
                                         'There was an error in executing the transaction',
                                         ''
-                                    )
+                                    );
                                 }
-                            })
+                            });
                     }
                 }
             }
@@ -1113,44 +1113,44 @@ export default class App extends PureComponent {
     }
     async getBalanceOfERC20(tokenAddress, account) {
         // console.log("getBlanecERC20" + account);
-        const { erc20 } = this.state
-        erc20.options.address = tokenAddress
-        return new BN(await erc20.methods.balanceOf(account).call())
+        const { erc20 } = this.state;
+        erc20.options.address = tokenAddress;
+        return new BN(await erc20.methods.balanceOf(account).call());
     }
 
     async isMarketFinalized(marketAddress) {
-        const { market } = this.state
-        market.options.address = marketAddress
+        const { market } = this.state;
+        market.options.address = marketAddress;
         // console.log(await market.methods.isFinalized().call());
-        return await market.methods.isFinalized().call()
+        return await market.methods.isFinalized().call();
     }
     async hasEnoughTokens(marketAddress, tokenAmounts) {
-        const wrappedBalances = await this.getBalancesMarketERC20(marketAddress)
-        let hasEnough = true
+        const wrappedBalances = await this.getBalancesMarketERC20(marketAddress);
+        let hasEnough = true;
         wrappedBalances.forEach((wrappedBalance, index) => {
             if (wrappedBalances[index].lt(tokenAmounts[index])) {
-                hasEnough = false
+                hasEnough = false;
             }
-        })
+        });
 
-        return hasEnough
+        return hasEnough;
     }
     async hasEnoughShareTokens(marketAddress, shareTokenAmounts) {
         const shareTokenBalances = await this.getBalancesMarketShareTokenWONumTicks(
             marketAddress
-        )
-        let hasEnough = true
+        );
+        let hasEnough = true;
         shareTokenBalances.forEach((shareTokenBalance, index) => {
             if (shareTokenBalances[index].lt(shareTokenAmounts[index])) {
-                hasEnough = false
+                hasEnough = false;
             }
-        })
-        return hasEnough
+        });
+        return hasEnough;
     }
     //amounts need to be BN objects with decimals take care of
     async unwrapShares(marketAddress, tokenAmounts) {
-        const { accounts, web3 } = this.state.web3Provider
-        const { augurFoundry, shareToken, OUTCOMES, chainId } = this.state
+        const { accounts, web3 } = this.state.web3Provider;
+        const { augurFoundry, shareToken, OUTCOMES, chainId } = this.state;
         if (marketAddress) {
             // const {
             //   invalidTokenBalance,
@@ -1161,39 +1161,39 @@ export default class App extends PureComponent {
             const hasEnough = await this.hasEnoughTokens(
                 marketAddress,
                 tokenAmounts
-            )
-            console.log('hasEnough', hasEnough)
+            );
+            console.log('hasEnough', hasEnough);
             if (!hasEnough) {
                 this.openNotification(
                     'error',
                     'Trying to Unwrap more than you have',
                     ''
-                )
-                return
+                );
+                return;
             }
 
-            let tokenIds = await this.getTokenIds(marketAddress)
-            let tokenAmountsTobeConsidered = []
-            let tokenIdsTobeConsidered = []
+            let tokenIds = await this.getTokenIds(marketAddress);
+            let tokenAmountsTobeConsidered = [];
+            let tokenIdsTobeConsidered = [];
 
             for (let i = 0; i < tokenIds.length; i++) {
                 if (!tokenAmounts[i].isZero()) {
-                    tokenIdsTobeConsidered.push(tokenIds[i])
-                    tokenAmountsTobeConsidered.push(tokenAmounts[i].toString())
+                    tokenIdsTobeConsidered.push(tokenIds[i]);
+                    tokenAmountsTobeConsidered.push(tokenAmounts[i].toString());
                 }
-                console.log('TokenAmounts', tokenAmounts[i].toString())
+                console.log('TokenAmounts', tokenAmounts[i].toString());
             }
 
             console.log(
                 'tokenAmountsTobeConsidered',
                 tokenAmountsTobeConsidered
-            )
+            );
 
             // let amount =
             //   yesTokenBalance > noTokenBalance ? noTokenBalance : yesTokenBalance;
-            this.openNotification('info', 'Unwrapping shares', '')
+            this.openNotification('info', 'Unwrapping shares', '');
             if (chainId === 42) {
-                const sendTo = accounts[0]
+                const sendTo = accounts[0];
                 const jsonInterfaceForUpdatedUnwrapMultipleTokens = {
                     inputs: [
                         {
@@ -1216,24 +1216,24 @@ export default class App extends PureComponent {
                     outputs: [],
                     stateMutability: 'nonpayable',
                     type: 'function',
-                }
+                };
                 const parameters = [
                     tokenIdsTobeConsidered,
                     tokenAmountsTobeConsidered,
                     sendTo,
-                ]
+                ];
                 const data = web3.eth.abi.encodeFunctionCall(
                     jsonInterfaceForUpdatedUnwrapMultipleTokens,
                     parameters
-                )
+                );
 
                 const customTx = {
                     from: accounts[0],
                     to: augurFoundry.options.address,
                     data: data,
-                }
-                await web3.eth.sendTransaction(customTx)
-                return
+                };
+                await web3.eth.sendTransaction(customTx);
+                return;
             }
             augurFoundry.methods
                 .unWrapMultipleTokens(
@@ -1246,8 +1246,8 @@ export default class App extends PureComponent {
                         'success',
                         'Shares unwrapped successfully',
                         ''
-                    )
-                    this.initData()
+                    );
+                    this.initData();
                 })
                 .on('error', (error) => {
                     if (
@@ -1259,187 +1259,187 @@ export default class App extends PureComponent {
                             'error',
                             'User denied signature',
                             'sign the transaction to be able to execute the transaction'
-                        )
+                        );
                     } else {
                         this.openNotification(
                             'error',
                             'There was an error in executing the transaction',
                             ''
-                        )
+                        );
                     }
-                })
+                });
         }
         // await this.initData();
     }
 
     async getBalancesMarketERC20(marketAddress) {
-        const { accounts } = this.state.web3Provider
-        const { shareToken, augurFoundry, erc20, OUTCOMES } = this.state
-        let invalidTokenBalance = new BN(0)
-        let yesTokenBalance = new BN(0)
-        let noTokenBalance = new BN(0)
+        const { accounts } = this.state.web3Provider;
+        const { shareToken, augurFoundry, erc20, OUTCOMES } = this.state;
+        let invalidTokenBalance = new BN(0);
+        let yesTokenBalance = new BN(0);
+        let noTokenBalance = new BN(0);
 
         if (accounts[0]) {
-            const tokenAddresses = await this.getTokenAddresses(marketAddress)
+            const tokenAddresses = await this.getTokenAddresses(marketAddress);
 
-            let tokenBalances = []
+            let tokenBalances = [];
             for (let i = 0; i < tokenAddresses.length; i++) {
                 const tokenBalance = await this.getBalanceOfERC20(
                     tokenAddresses[i],
                     accounts[0]
-                )
-                tokenBalances.push(tokenBalance)
+                );
+                tokenBalances.push(tokenBalance);
             }
             // console.log('tokenBalances', tokenBalances)
-            return tokenBalances
+            return tokenBalances;
         }
     }
     async getNumberOfOutcomes(marketAddress) {
-        const { market } = this.state
-        market.options.address = marketAddress
-        return await market.methods.getNumberOfOutcomes().call()
+        const { market } = this.state;
+        market.options.address = marketAddress;
+        return await market.methods.getNumberOfOutcomes().call();
     }
     async getTokenIds(marketAddress) {
-        const { shareToken, augurFoundry, OUTCOMES, market } = this.state
-        market.options.address = marketAddress
+        const { shareToken, augurFoundry, OUTCOMES, market } = this.state;
+        market.options.address = marketAddress;
 
-        const numOfOutcomes = await market.methods.getNumberOfOutcomes().call()
+        const numOfOutcomes = await market.methods.getNumberOfOutcomes().call();
         // console.log('num of outcomes', numOfOutcomes)
 
-        const outcomeArray = Array.from({ length: numOfOutcomes }, (_, i) => i)
+        const outcomeArray = Array.from({ length: numOfOutcomes }, (_, i) => i);
 
         // console.log('ouecomeArray', outcomeArray)
 
         let tokenIds = await shareToken.methods
             .getTokenIds(marketAddress, outcomeArray)
-            .call()
+            .call();
         // console.log('tokenIds', tokenIds)
-        this.setState({ tokenIds: tokenIds })
-        return tokenIds
+        this.setState({ tokenIds: tokenIds });
+        return tokenIds;
     }
 
     async getTokenAddresses(marketAddress) {
-        const { shareToken, augurFoundry, OUTCOMES, market } = this.state
+        const { shareToken, augurFoundry, OUTCOMES, market } = this.state;
 
-        let tokenIds = await this.getTokenIds(marketAddress)
+        let tokenIds = await this.getTokenIds(marketAddress);
 
-        const tokenAddresses = []
+        const tokenAddresses = [];
 
         for (let i = 0; i < tokenIds.length; i++) {
             const tokenAddress = await augurFoundry.methods
                 .wrappers(tokenIds[i])
-                .call()
-            tokenAddresses.push(tokenAddress)
+                .call();
+            tokenAddresses.push(tokenAddress);
         }
         // console.log('tokenAddresses', tokenAddresses)
 
-        return tokenAddresses
+        return tokenAddresses;
     }
     async getERC20Symbols(marketAddress) {
-        const { erc20 } = this.state
-        const tokenAddresses = await this.getTokenAddresses(marketAddress)
+        const { erc20 } = this.state;
+        const tokenAddresses = await this.getTokenAddresses(marketAddress);
 
-        let tokenSymbols = []
+        let tokenSymbols = [];
 
         for (let i = 0; i < tokenAddresses.length; i++) {
-            erc20.options.address = tokenAddresses[i]
-            const tokenSymbol = await erc20.methods.symbol().call()
-            tokenSymbols.push(tokenSymbol)
+            erc20.options.address = tokenAddresses[i];
+            const tokenSymbol = await erc20.methods.symbol().call();
+            tokenSymbols.push(tokenSymbol);
         }
         // console.log('tokenSymbols', tokenSymbols)
 
-        return tokenSymbols
+        return tokenSymbols;
     }
     async getBalancesMarketShareTokenWONumTicks(marketAddress) {
-        const { accounts } = this.state.web3Provider
-        const { shareToken } = this.state
+        const { accounts } = this.state.web3Provider;
+        const { shareToken } = this.state;
 
         if (accounts[0]) {
-            let tokenIds = await this.getTokenIds(marketAddress)
+            let tokenIds = await this.getTokenIds(marketAddress);
 
-            let shareTokenBalances = []
+            let shareTokenBalances = [];
 
             for (let i = 0; i < tokenIds.length; i++) {
                 const shareTokenBalance = new BN(
                     await shareToken.methods
                         .balanceOf(accounts[0], tokenIds[i])
                         .call()
-                )
-                shareTokenBalances.push(shareTokenBalance)
+                );
+                shareTokenBalances.push(shareTokenBalance);
             }
-            return shareTokenBalances
+            return shareTokenBalances;
         }
     }
     async getBalancesMarketShareToken(marketAddress) {
-        const { accounts, web3 } = this.state.web3Provider
-        const { shareToken, augurFoundry, market, erc20, OUTCOMES } = this.state
+        const { accounts, web3 } = this.state.web3Provider;
+        const { shareToken, augurFoundry, market, erc20, OUTCOMES } = this.state;
 
-        market.options.address = marketAddress
-        let numTicks = new BN(await market.methods.getNumTicks().call())
+        market.options.address = marketAddress;
+        let numTicks = new BN(await market.methods.getNumTicks().call());
 
         if (accounts[0]) {
-            let tokenIds = await this.getTokenIds(marketAddress)
+            let tokenIds = await this.getTokenIds(marketAddress);
 
-            let shareTokenBalancesWithNumTicks = []
+            let shareTokenBalancesWithNumTicks = [];
 
             for (let i = 0; i < tokenIds.length; i++) {
                 const shareTokenBalance = new BN(
                     await shareToken.methods
                         .balanceOf(accounts[0], tokenIds[i])
                         .call()
-                )
+                );
                 const shareTokenBalanceWithNumTicks = shareTokenBalance.mul(
                     numTicks
-                )
+                );
                 shareTokenBalancesWithNumTicks.push(
                     shareTokenBalanceWithNumTicks
-                )
+                );
             }
 
             // console.log(
             //     'shareTokenBalancesWithNumTicks',
             //     shareTokenBalancesWithNumTicks
             // )
-            return shareTokenBalancesWithNumTicks
+            return shareTokenBalancesWithNumTicks;
         }
     }
 
     async checkIfMoreThanZeroERC20s(wrappedBalances) {
-        const { accounts } = this.state.web3Provider
+        const { accounts } = this.state.web3Provider;
         // console.log("accounts{0}" + accounts[0]);
         // console.log("marketAddress" + marketAddress);
 
         for (let i = 0; i < wrappedBalances.length; i++) {
             if (wrappedBalances[i].cmp(new BN(0)) !== 0) {
-                return true
+                return true;
             }
         }
-        return false
+        return false;
     }
     async checkIfMoreThanZeroShares(shareTokenBalances) {
         for (let i = 0; i < shareTokenBalances.length; i++) {
             if (shareTokenBalances[i].cmp(new BN(0)) !== 0) {
-                return true
+                return true;
             }
         }
-        return false
+        return false;
     }
 
     openNotification = (type, title, description, duration) => {
         if (duration == undefined) {
-            duration = 15
+            duration = 15;
         } else {
-            duration = duration
+            duration = duration;
         }
         // const { notification } = antd;
         notification[type]({
             message: title,
             duration: duration,
             description: description,
-        })
-    }
+        });
+    };
     timeConverter(UNIX_timestamp) {
-        var a = new Date(UNIX_timestamp * 1000)
+        var a = new Date(UNIX_timestamp * 1000);
         var time = a.toLocaleString('en-US', {
             year: 'numeric',
             month: 'numeric',
@@ -1447,14 +1447,14 @@ export default class App extends PureComponent {
             hour: '2-digit',
             minute: '2-digit',
             timeZoneName: 'short',
-        })
-        return time
+        });
+        return time;
     }
     showMarketInfoOnHover(marketId) {
         // let desciption = markets[marketId].desciption;
-        let longDescription = markets[marketId].extraInfo.longDescription
-        let endTimeUnix = markets[marketId].endTime
-        let date = this.timeConverter(endTimeUnix)
+        let longDescription = markets[marketId].extraInfo.longDescription;
+        let endTimeUnix = markets[marketId].endTime;
+        let date = this.timeConverter(endTimeUnix);
 
         //"Resolution Details: " + longDescription + "\nMarket Ends on: " + date
         return (
@@ -1470,58 +1470,58 @@ export default class App extends PureComponent {
                     MARKET ID : {markets[marketId].address}
                 </Popover.Content>
             </Popover>
-        )
+        );
     }
     handleChange = async (e) => {
-        console.log('handle change')
-        console.log(e.target.name, e.target.value)
-        this.setState({ [e.target.name]: e.target.value })
-        console.log('state', this.state)
-    }
+        console.log('handle change');
+        console.log(e.target.name, e.target.value);
+        this.setState({ [e.target.name]: e.target.value });
+        console.log('state', this.state);
+    };
     onModalSubmit = async (e) => {
-        const { marketAddress, isWrapping } = this.state
-        const { web3 } = this.state.web3Provider
+        const { marketAddress, isWrapping } = this.state;
+        const { web3 } = this.state.web3Provider;
         // let marketAddress = "0x4dea3bedae79da692f2675038c4d9b8c246b4fb6";
-        e.preventDefault()
-        e.persist()
+        e.preventDefault();
+        e.persist();
 
         //TODO: Add tokenIds in the state
-        const tokenIds = await this.getTokenIds(marketAddress)
+        const tokenIds = await this.getTokenIds(marketAddress);
 
         //TODO: Add multiplier in the state
-        let multiplier = new BN(3)
-        let chainId = await web3.eth.net.getId()
+        let multiplier = new BN(3);
+        let chainId = await web3.eth.net.getId();
         // if (chainId === 42) {
         //     multiplier = new BN(2)
         // }
 
-        let inputAmounts = []
+        let inputAmounts = [];
         for (let i = 0; i < tokenIds.length; i++) {
-            let inputAmountRaw = e.target.elements['inputAmount' + i].value
-            console.log('inputAmountsRaw', inputAmountRaw)
+            let inputAmountRaw = e.target.elements['inputAmount' + i].value;
+            console.log('inputAmountsRaw', inputAmountRaw);
             //TODO: add sanity check for inputAmountRaw
 
-            let inputAmount = new BN(web3.utils.toWei(inputAmountRaw))
-            inputAmount = inputAmount.div(new BN(10).pow(multiplier))
+            let inputAmount = new BN(web3.utils.toWei(inputAmountRaw));
+            inputAmount = inputAmount.div(new BN(10).pow(multiplier));
 
-            inputAmounts.push(inputAmount)
+            inputAmounts.push(inputAmount);
         }
 
-        console.log('marketAddress', marketAddress)
+        console.log('marketAddress', marketAddress);
 
         if (isWrapping) {
-            await this.wrapShare(marketAddress, inputAmounts)
+            await this.wrapShare(marketAddress, inputAmounts);
         } else {
-            await this.unwrapShares(marketAddress, inputAmounts)
+            await this.unwrapShares(marketAddress, inputAmounts);
         }
-    }
+    };
 
     showToolTip() {
-        this.setState({ isShowToolTip: true })
+        this.setState({ isShowToolTip: true });
     }
 
     hideToolTip() {
-        this.setState({ isShowToolTip: false })
+        this.setState({ isShowToolTip: false });
     }
     render() {
         return (
@@ -1571,14 +1571,14 @@ export default class App extends PureComponent {
                                             WRAP SHARES
                                         </Button>
                                     ) : (
-                                        <Button
-                                            variant="success"
-                                            className="m-left"
-                                            type="submit"
-                                        >
-                                            UNWRAP{' '}
-                                        </Button>
-                                    )}
+                                            <Button
+                                                variant="success"
+                                                className="m-left"
+                                                type="submit"
+                                            >
+                                                UNWRAP{' '}
+                                            </Button>
+                                        )}
                                 </Col>
                             </Row>
                         </Form>
@@ -1716,8 +1716,8 @@ export default class App extends PureComponent {
                             {this.state.listData == null ? (
                                 <span>Loading...</span>
                             ) : (
-                                this.state.listData
-                            )}
+                                    this.state.listData
+                                )}
                         </tbody>
                     </Table>
                     <div className="misc-links">
@@ -1820,6 +1820,6 @@ export default class App extends PureComponent {
                     </Modal.Body>
                 </Modal>
             </Container>
-        )
+        );
     }
 }
