@@ -1,13 +1,37 @@
 [
-    {
+       {
         "augurFoundryAddress": "0x87876F172087E2fb5838E655DC6A929dC2Dcf85c",
+        "address": "0x948b73ED9F9b22D25941D4A07A2ab6dDfC678C06",
+        "extraInfo": {
+            "categories": ["Sports", "American Football", "NFL"],
+            "description": " 🔥 Which NFL Team Will Win the 2021 Super Bowl?",
+            "longDescription": "If the game in question has not taken place by market expiration time or fewer than 55 minutes of game time have elapsed, then the market shall resolve to Invalid.  If the game is suspended after at least 55 minutes of play and not resumed by market expiration time, then the score when the game is halted shall determine the market outcome. The market shall resolve to whichever team has a higher score at that time or to Invalid if the score is tied. If the game is still in play at market expiration time and at least 55 minutes of game time have elapsed, then the market shall resolve to whichever team has a higher score at that time or to Invalid if the score is tied."
+        },
+        "outcomes": [
+            "0x4B616E7361732043697479204368696566730000000000000000000000000000",
+            "0x54616D7061204261792042756363616E65657273000000000000000000000000"
+        ],
+        "outcomeStrings": [
+            "Invalid",
+            "Kansas City Chiefs",
+            "Tampa Bay Buccaneers"
+        ],
+        "tokenIds": [
+            "67188693439473335563771478016214866211515649313915296535936990098925484507136",
+            "67188693439473335563771478016214866211515649313915606020946811443994209288192",
+            "67188693439473335563771478016214866211515649313915915505956632789062934069248"
+        ],
+        "tokenIcons": [
+            null,
+            "",
+            "https://cloudflare-ipfs.com/ipfs/QmQVw7Mb9X6NvThWfgSVncwGh53vZvnBNLZzWHMufjFqdD"
+        ],
+        "endTime": "1612828800"
+    },
+    {
         "address": "0x1EBb89156091EB0d59603C18379C03A5c84D7355",
         "extraInfo": {
-            "categories": [
-                "Politics",
-                "US Politics",
-                "President"
-            ],
+            "categories": ["Politics", "US Politics", "President"],
             "description": "Will Donald Trump win the 2020 U.S. Presidential election?",
             "longDescription": "A candidate that receives at least 270 votes in the Electoral College shall be considered the winner. In the event that no candidate receives 270 votes, the House of Representatives will decide the winner. In the event of further indecision or tie, it will be the candidate determined to be the winner under the US Constitution.\nThis market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'."
         },
@@ -29,20 +53,12 @@
             "https://cloudflare-ipfs.com/ipfs/QmRWo92JEL6s2ydN1fK2Q3KAX2rzBnTnfqkABFYHmA5EUT"
         ],
         "endTime": "1611273600",
-        "outcomeStrings": [
-            "Invalid",
-            "No",
-            "Yes"
-        ]
+        "outcomeStrings": ["Invalid", "No", "Yes"]
     },
     {
         "address": "0x6E6fFB10179FEbF29B0223D22793d1c1d8A8f541",
         "extraInfo": {
-            "categories": [
-                "Politics",
-                "US Elections",
-                ""
-            ],
+            "categories": ["Politics", "US Elections", ""],
             "description": "Will the Democratic Party Control the Presidency, the Senate, and the House of Representatives on February 1st, 2021?",
             "longDescription": "This market shall resolve as YES if and only if all three of the following conditions are true at 00:00 UTC on February 1st, 2021:\n\n1. The last inaugurated president of the U.S. is affiliated with the U.S. Democratic Party.\n2. The Senate Majority Leader is affiliated with the U.S. Democratic Party. \n3. The majority of voting members of the House of Representatives are affiliated with the U.S. Democratic Party",
             "_scalarDenomination": "",
@@ -66,21 +82,14 @@
             "https://cloudflare-ipfs.com/ipfs/QmZfAjSUevTSJe5Lqg22vx4zAPGrkafDKz33LJG2GWoAqG",
             "https://cloudflare-ipfs.com/ipfs/QmUA2ExuPSRPHepiRqe3VH4oZKHkw6URoNtFB7UqHN8Vgh"
         ],
+
         "endTime": "1612137600",
-        "outcomeStrings": [
-            "Invalid",
-            "No",
-            "Yes"
-        ]
+        "outcomeStrings": ["Invalid", "No", "Yes"]
     },
     {
         "address": "0x0946A3Eab3d638c606459b0A9F1E76EB5324985F",
         "extraInfo": {
-            "categories": [
-                "Politics",
-                "US Elections",
-                "Misc"
-            ],
+            "categories": ["Politics", "US Elections", "Misc"],
             "description": "Will 45th U.S. president Donald Trump physically attend the 59th U.S. presidential inauguration?",
             "longDescription": "This market shall resolve as YES if and only if Donald Trump, the 45th U.S. president, physically attends the 59th U.S. presidential inauguration ceremony, scheduled for January 20th, 2021 at market creation time. The resolution of this market shall be based on general knowledge, as the ceremony has historically been widely covered by a number of media outlets, including video records.",
             "_scalarDenomination": "",
@@ -104,21 +113,14 @@
             "https://cloudflare-ipfs.com/ipfs/QmPPHjD2wYJzs46kfYrGFsELLj2a2NQjiKWtoHTs1yVvfF",
             "https://cloudflare-ipfs.com/ipfs/Qmc14RQHBa9zezBYERJqMDAknkfmC14VN8coPz9KYiMKMU"
         ],
+
         "endTime": "1611273600",
-        "outcomeStrings": [
-            "Invalid",
-            "No",
-            "Yes"
-        ]
+        "outcomeStrings": ["Invalid", "No", "Yes"]
     },
     {
         "address": "0x9acBF499d2bc7A4b60643e852807928D7fA4Ee01",
         "extraInfo": {
-            "categories": [
-                "Crypto",
-                "Policy",
-                "Misc"
-            ],
+            "categories": ["Crypto", "Policy", "Misc"],
             "description": "By January 21st, 2021 at 00:00 UTC, will the U.S. Department of the Treasury announce that crypto exchanges will be required to verify the identity of withdrawal address owners?",
             "longDescription": "This market shall resolve to YES if and only if by January 21st, 2021 at 00:00 UTC, the U.S. Department of the Treasury, through any of its communication channels or those of its bureaus, communicates that they will be requiring one or more cryptocurrency exchanges to verify the identity of the owner of the addresses specified by a user for a cryptocurrency withdrawal operation, or otherwise enforces that rule by either suing exchanges or fining them for noncompliance. The ruling(s) does not have to specify any withdrawal limit. For example, if such a rule is announced or enforced only for withdrawals above 250 USD worth of cryptocurrencies, the market will resolve as YES. Similarly, the rule need not apply to all withdrawals. For example, if it is required to verify the identity only for addresses which are not affiliated to any custodian but not for withdrawals to addresses controlled by known custodians, or if the requirement only applies to addresses of a specific cryptocurrency the market shall still resolve as YES. The market shall also resolve as YES if only one specific class of exchanges is targeted, e.g. only exchanges operating within the U.S. For the purpose of this market, communications from individually owned social media accounts will not affect market resolution. For example, if the Secretary of Treasury uses his personal Twitter account to announce something but that information is not reflected in official communication channels from the U.S. Treasury, the market shall resolve as NO. For informational purposes, communications from the U.S. Treasury may be found in the news section of their website, located at https://home.treasury.gov/ at the time of market creation, on their official social media accounts, or on the official websites or social media accounts of their Bureaus, for example, FinCEN, whose website is located at https://www.fincen.gov/ at the time of market creation.",
             "_scalarDenomination": "",
@@ -142,21 +144,14 @@
             "https://cloudflare-ipfs.com/ipfs/QmQJfowCxSt4UD7wcSss6N4bHyMD25q2jxZAsMsXTmRrfF",
             "https://cloudflare-ipfs.com/ipfs/QmerMfGBP3n6sWRoNCPtL11XdLqXcmdsJPHZYbxKKxHLRS"
         ],
+
         "endTime": "1611273600",
-        "outcomeStrings": [
-            "Invalid",
-            "No",
-            "Yes"
-        ]
+        "outcomeStrings": ["Invalid", "No", "Yes"]
     },
     {
         "address": "0x827f9A41cA4f4C6aD8098f18a045c8115d4D2749",
         "extraInfo": {
-            "categories": [
-                "Sports",
-                "American Football",
-                "NFL"
-            ],
+            "categories": ["Sports", "American Football", "NFL"],
             "description": "Will the Buffalo Bills Win the 2021 AFC Championship Game?",
             "longDescription": "If the game in question has not taken place by market expiration time or fewer than 55 minutes of game time have elapsed, then the market shall resolve as Invalid. If the game is suspended after at least 55 minutes of play and not resumed by market expiration time, then the score when the game is halted will determine the market outcome. If the Bills have a higher score at that time, then the market shall resolve as YES. If the Bills have a lower score or the score is tied at that time, then the market shall resolve as NO. If the game is still in play at market expiration time and at least 55 minutes of game time have elapsed, then the market shall resolve as YES if the Bills have a higher score at that time and as NO if the Bills have a lower score or if the score is tied.",
             "_scalarDenomination": "",
@@ -181,20 +176,12 @@
             "https://cloudflare-ipfs.com/ipfs/QmbEDv7Jy6Aouj5jFJU88uocQYQMtSVgeUbaPSULGMuaKX"
         ],
         "endTime": "1611619200",
-        "outcomeStrings": [
-            "Invalid",
-            "No",
-            "Yes"
-        ]
+        "outcomeStrings": ["Invalid", "No", "Yes"]
     },
     {
         "address": "0xc8EfC74f5b5742E4d1c15ACa63684116EDe96111",
         "extraInfo": {
-            "categories": [
-                "Sports",
-                "American Football",
-                "NFL"
-            ],
+            "categories": ["Sports", "American Football", "NFL"],
             "description": "Will the Tampa Bay Buccaneers Win the 2021 NFC Championship Game?",
             "longDescription": "If the game in question has not taken place by market expiration time or fewer than 55 minutes of game time have elapsed, then the market shall resolve as Invalid. If the game is suspended after at least 55 minutes of play and not resumed by market expiration time, then the score when the game is halted will determine the market outcome. If the Buccaneers have a higher score at that time, then the market shall resolve as YES. If the Buccaneers have a lower score or the score is tied at that time, then the market shall resolve as NO. If the game is still in play at market expiration time and at least 55 minutes of game time have elapsed, then the market shall resolve as YES if the Buccaneers have a higher score at that time and as NO if the Buccaneers have a lower score or if the score is tied",
             "_scalarDenomination": "",
@@ -219,42 +206,6 @@
             "https://cloudflare-ipfs.com/ipfs/QmQVw7Mb9X6NvThWfgSVncwGh53vZvnBNLZzWHMufjFqdD"
         ],
         "endTime": "1611619200",
-        "outcomeStrings": [
-            "Invalid",
-            "No",
-            "Yes"
-        ]
-    },
-    {
-        "address": "0x948b73ED9F9b22D25941D4A07A2ab6dDfC678C06",
-        "extraInfo": {
-            "categories": [
-                "Sports",
-                "American Football",
-                "NFL"
-            ],
-            "description": "Which NFL Team Will Win the 2021 Super Bowl?",
-            "longDescription": "If the game in question has not taken place by market expiration time or fewer than 55 minutes of game time have elapsed, then the market shall resolve to Invalid.  If the game is suspended after at least 55 minutes of play and not resumed by market expiration time, then the score when the game is halted shall determine the market outcome. The market shall resolve to whichever team has a higher score at that time or to Invalid if the score is tied. If the game is still in play at market expiration time and at least 55 minutes of game time have elapsed, then the market shall resolve to whichever team has a higher score at that time or to Invalid if the score is tied."
-        },
-        "outcomes": [
-            "0x4B616E7361732043697479204368696566730000000000000000000000000000",
-            "0x54616D7061204261792042756363616E65657273000000000000000000000000"
-        ],
-        "outcomeStrings": [
-            "Invalid",
-            "Kansas City Chiefs",
-            "Tampa Bay Buccaneers"
-        ],
-        "tokenIds": [
-            "67188693439473335563771478016214866211515649313915296535936990098925484507136",
-            "67188693439473335563771478016214866211515649313915606020946811443994209288192",
-            "67188693439473335563771478016214866211515649313915915505956632789062934069248"
-        ],
-        "tokenIcons": [
-            null,
-            "https://cloudflare-ipfs.com/ipfs/QmcrygUUrksinSjewEvTvAE5yZtUCpAPVRjb46HwcjNx5s",
-            "https://cloudflare-ipfs.com/ipfs/QmQVw7Mb9X6NvThWfgSVncwGh53vZvnBNLZzWHMufjFqdD"
-        ],
-        "endTime": "1612828800"
+        "outcomeStrings": ["Invalid", "No", "Yes"]
     }
 ]

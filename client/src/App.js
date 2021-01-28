@@ -1802,18 +1802,10 @@ export default class App extends PureComponent {
                             </Col>
                             <Col>
                                 <a
-                                    href="https://pools.balancer.exchange/#/pool/0xea09809ad3768504fe81bddc69e11653c1e7e629"
+                                    href="https://pools.balancer.exchange/#/pool/0xd4f73d51098df4dbe841cbbe3fa77d735422f656/"
                                     target="_blank"
                                 >
-                                    <h5>yBUCCS/nBUCCS/DAI </h5>
-                                </a>
-                            </Col>
-                            <Col>
-                                <a
-                                    href="https://pools.balancer.exchange/#/pool/0xc7d919fe3418abad0979569041bed141726e9b86"
-                                    target="_blank"
-                                >
-                                    <h5>yBILLS/nBILLS/DAI </h5>
+                                    <h5>SUPER BOWL (Chiefs/Bucs/DAI)</h5>
                                 </a>
                             </Col>
                         </Row>
