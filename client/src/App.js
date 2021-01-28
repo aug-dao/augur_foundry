@@ -371,8 +371,8 @@ export default class App extends PureComponent {
             console.log('displayOfMarket', x, isMarketsToBeDisplayed);
 
             const outcomeNames = markets[x].outcomeStrings;
-            // if (isMarketsToBeDisplayed) {
-            if (true) {
+            if (isMarketsToBeDisplayed) {
+                // if (true) {
                 listData.push(
                     <tr>
                         <OverlayTrigger
