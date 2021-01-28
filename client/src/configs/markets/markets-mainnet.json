@@ -179,5 +179,33 @@
         ],
         "endTime": "1611619200",
         "outcomeStrings": ["Invalid", "No", "Yes"]
+    },
+    {
+        "address": "0x948b73ED9F9b22D25941D4A07A2ab6dDfC678C06",
+        "extraInfo": {
+            "categories": ["Sports", "American Football", "NFL"],
+            "description": "Which NFL Team Will Win the 2021 Super Bowl?",
+            "longDescription": "If the game in question has not taken place by market expiration time or fewer than 55 minutes of game time have elapsed, then the market shall resolve to Invalid.  If the game is suspended after at least 55 minutes of play and not resumed by market expiration time, then the score when the game is halted shall determine the market outcome. The market shall resolve to whichever team has a higher score at that time or to Invalid if the score is tied. If the game is still in play at market expiration time and at least 55 minutes of game time have elapsed, then the market shall resolve to whichever team has a higher score at that time or to Invalid if the score is tied."
+        },
+        "outcomes": [
+            "0x4B616E7361732043697479204368696566730000000000000000000000000000",
+            "0x54616D7061204261792042756363616E65657273000000000000000000000000"
+        ],
+        "outcomeStrings": [
+            "Invalid",
+            "Kansas City Chiefs",
+            "Tampa Bay Buccaneers"
+        ],
+        "tokenIds": [
+            "67188693439473335563771478016214866211515649313915296535936990098925484507136",
+            "67188693439473335563771478016214866211515649313915606020946811443994209288192",
+            "67188693439473335563771478016214866211515649313915915505956632789062934069248"
+        ],
+        "tokenIcons": [
+            null,
+            "",
+            "https://cloudflare-ipfs.com/ipfs/QmQVw7Mb9X6NvThWfgSVncwGh53vZvnBNLZzWHMufjFqdD"
+        ],
+        "endTime": "1612828800"
     }
 ]
