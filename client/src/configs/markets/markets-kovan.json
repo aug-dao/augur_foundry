@@ -1,9 +1,36 @@
 [
     {
         "augurFoundryAddress": "0x33E97B4889c3cc70591AdD4Ffe7E62804EF9AA9C",
+        "address": "0x9d455D742d582d91aC5ED8AFbbEe2950462151cd",
+        "extraInfo": {
+            "categories": [
+                "Sports",
+                "Basketball",
+                "NBA"
+            ],
+            "description": " A finalized market",
+            "longDescription": "In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as Yes.This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'. If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'."
+        },
+        "invalidTokenId": "71135674669581923857223983722840145003821259933947317560714309537675891179520",
+        "noTokenId": "71135674669581923857223983722840145003821259933947627045724130882744615960576",
+        "yesTokenId": "71135674669581923857223983722840145003821259933947936530733952227813340741632",
+        "invalidTokenAddress": "0x4053dCBd78b2459c361d2728E28d39BE819bf986",
+        "NoTokenAddress": "0x511C37BABe3BF76a674A697326D169de1ED70043",
+        "YesTokenAddress": "0x0967675871F33962beab13a52EF03813a9a884CA",
+        "outcomeStrings": [
+            "Invalid",
+            "No",
+            "Yes"
+        ]
+    },
+    {
         "address": "0x99EB774c9Ce9201d9a7a5E9394b45081A12918F8",
         "extraInfo": {
-            "categories": ["Politics", "US Politics", "President"],
+            "categories": [
+                "Politics",
+                "US Politics",
+                "President"
+            ],
             "description": "Will DJ win the 2020 U.S. Presidential election?",
             "longDescription": "The winning candidate will have at least 270 electoral votes to win the presidential election.\nThis market is intended to be about a Single Candidate, if this is not the case, this market should settle as 'Invalid'."
         },
@@ -13,12 +40,20 @@
         "invalidTokenAddress": "0xBeD659939D90Ed4B0eEf9871A17FD9Ac533ede49",
         "NoTokenAddress": "0x1b5F5a0cE47DF3088a0A47a69fE0a26d64AD8eF2",
         "YesTokenAddress": "0x7c6fd5D713a0d1300FBb0A45Fd60557A7fA01f82",
-        "outcomeStrings": ["Invalid", "Yes", "No"]
+        "outcomeStrings": [
+            "Invalid",
+            "No",
+            "Yes"
+        ]
     },
     {
         "address": "0xf84a0dD7130A3b6a00033Cd41E27aC56C3B3D8db",
         "extraInfo": {
-            "categories": ["Sports", "Basketball", "NBA"],
+            "categories": [
+                "Sports",
+                "Basketball",
+                "NBA"
+            ],
             "description": " Will Anthony Davis win the 2019-20 Defensive Player of the Year award?",
             "longDescription": "In the event of an award given to more than 1 player. If the player mentioned in the market is one of the players who wins the award, the market should resolve as Yes.This market is intended to be about a Single Person, if this is not the case, this market should settle as 'Invalid'. If the award in the market question is not awarded for any reason by event expiration, this market should resolve as 'No'."
         },
@@ -28,12 +63,20 @@
         "invalidTokenAddress": "0x6AA2A8498F6507a729e56640455156746c86908E",
         "NoTokenAddress": "0x262159870BA1E34812E3AccD20B9E1558fEADfC8",
         "YesTokenAddress": "0x3D4f7a2E01ed33Dcbf00b03E1107252f79f7748C",
-        "outcomeStrings": ["Invalid", "Yes", "No"]
+        "outcomeStrings": [
+            "Invalid",
+            "No",
+            "Yes"
+        ]
     },
     {
         "address": "0x0599f7E51B41673ec1cEa31E088C2Ee041d22fBB",
         "extraInfo": {
-            "categories": ["Medical", "Covid-19", ""],
+            "categories": [
+                "Medical",
+                "Covid-19",
+                ""
+            ],
             "description": "Will the FDA approve a vaccine for Coronavirus (Covid-19) by October 31, 2020?",
             "longDescription": ""
         },
@@ -43,12 +86,20 @@
         "invalidTokenAddress": "0x597B546Be051f5DB4B60C452334f4267FA6501F9",
         "NoTokenAddress": "0x5074A27d8FA915f6A1C5dcb37776F7ace6217146",
         "YesTokenAddress": "0x263Ae106aEbb3e1210B28E410b4beA82d0849b6e",
-        "outcomeStrings": ["Invalid", "Yes", "No"]
+        "outcomeStrings": [
+            "Invalid",
+            "No",
+            "Yes"
+        ]
     },
     {
         "address": "0xE51eE82fD63281B0e4A8E4559d977bF28C786066",
         "extraInfo": {
-            "categories": ["Crypto", "Ethereum", "ETHUSD (crypto - Bitfinex)"],
+            "categories": [
+                "Crypto",
+                "Ethereum",
+                "ETHUSD (crypto - Bitfinex)"
+            ],
             "description": "Will the price of ETH/USD open at or above 800 on September 30, 2020, according to TradingView.com \\\"ETHUSD (crypto - Bitfinex)",
             "longDescription": "Use ticker symbol search for token pair (ie ETHUSD), find exchange that corresponds to market question. Navigate to Full-featured daily chart, Opening price is determined on the date in the market question on tradingview.com.\\nOpening price can also be found on tradingview using the hourly chart for the date in the market question at UTC (0) 00:00\\nIf the trading pair market isn't available on tradingview.com, refer to the actual exchange. For example, if Coinbase's tradingview.com data feed is unavailable, find the opening price on Coinbase's exchange by using the hourly candlestick chart adjusting for local timezone offset. In order to find equivalent 00:00 UTC-0 hourly candlestick for December 16th, go to hourly candelstick for 00:00 December 16th, then count backwards or forwards the number of candlesticks depending on local time zone offset. If local timezone offset is UTC -5 move back 5 candlesticks to find the Open Price for 19:00 December 15th hourly candlestick."
         },
@@ -58,12 +109,20 @@
         "invalidTokenAddress": "0xe8345c4b3d87455Ae5D43531daf74826AeBD55d8",
         "NoTokenAddress": "0xF2DBb591FA732b50d01BF1C23f5D7626CAAdE058",
         "YesTokenAddress": "0x86Fd0cBdD81FB80baE08904030166a8Cc31B1d62",
-        "outcomeStrings": ["Invalid", "Yes", "No"]
+        "outcomeStrings": [
+            "Invalid",
+            "No",
+            "Yes"
+        ]
     },
     {
         "address": "0x597EB7da104d3Afcc662F3D6de5AE04A2863DcDc",
         "extraInfo": {
-            "categories": ["Sports", "American Football", "NFL"],
+            "categories": [
+                "Sports",
+                "American Football",
+                "NFL"
+            ],
             "description": "Which NFL team will win the 2021 Super Bowl?",
             "longDescription": "If the winner is not listed as a market outcome, the market should resolve as 'Other (Field)'\nIf the season is officially cancelled and the event in the market is not played, this market should resolve as 'Invalid'\nIf the league suspends play and starts up again at a later date, and the winner of the event in the market is determined before the Market’s Event Expiration begins, this market is still valid and should be settled accordingly.\nIf the league suspends play and starts up again at a later date, and the winner of the event in the market is determined after the Market’s Event Expiration begins, this market should resolve as 'Invalid'."
         },
