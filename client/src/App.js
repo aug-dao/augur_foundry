@@ -316,9 +316,9 @@ export default class App extends PureComponent {
         // let noTokenAddress = [];
         // console.log(markets);
         this.openNotification('info', 'Updating Markets...', '', 5);
-        // for (let x = 0; x < markets.length; x++) {
-        // for (let x = 0; x < 1; x++) {
-        for (let x = markets.length - 1; x < markets.length; x++) {
+        for (let x = 0; x < markets.length; x++) {
+            // for (let x = 0; x < 1; x++) {
+            // for (let x = markets.length - 1; x < markets.length; x++) {
             // let x = 0;
             const wrappedBalances = await this.getBalancesMarketERC20(
                 markets[x].address

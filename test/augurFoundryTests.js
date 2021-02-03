@@ -5,8 +5,7 @@ const {
   expectRevert,
 } = require("@openzeppelin/test-helpers");
 const { expect } = require("chai");
-const { MAX_INT256 } = require("@openzeppelin/test-helpers/src/constants");
-const { ZERO_ADDRESS } = constants;
+const { ZERO_ADDRESS, MAX_INT256 } = constants;
 
 const MockShareToken = artifacts.require("MockShareToken");
 const MockCash = artifacts.require("MockCash");
