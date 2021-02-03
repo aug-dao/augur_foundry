@@ -334,6 +334,11 @@ contract AugurFoundry is
         uint256 value,
         bytes calldata data
     ) external override returns (bytes4) {
+        operator;
+        from;
+        id;
+        value;
+        data;
         return (
             bytes4(
                 keccak256(
@@ -363,6 +368,11 @@ contract AugurFoundry is
         uint256[] calldata values,
         bytes calldata data
     ) external override returns (bytes4) {
+        operator;
+        from;
+        ids;
+        values;
+        data;
         return
             bytes4(
                 keccak256(
