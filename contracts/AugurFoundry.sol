@@ -143,6 +143,28 @@ contract AugurFoundry is
         erc20Wrapper.wrapTokens(_account, _amount);
     }
 
+    /**@dev wraps multiple tokens */
+    function wrapMultipleTokens(
+        uint256[] memory _tokenIds,
+        address _account,
+        uint256[] memory _amounts
+    ) public {
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            wrapTokens(_tokenIds[i], _account, _amounts[i]);
+        }
+    }
+
+    /**@dev unwraps multiple tokens */
+    function unWrapMultipleTokens(
+        uint256[] memory _tokenIds,
+        uint256[] memory _amounts,
+        address _recipient
+    ) public {
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            unWrapTokens(_tokenIds[i], _amounts[i], _recipient);
+        }
+    }
+
     /**@dev A function that burns ERC20s and gives back ERC1155s
      * Requirements:
      *
@@ -182,7 +204,7 @@ contract AugurFoundry is
     }
 
     /**
-     * @notice A  Helper function to Buy some amount of complete sets for a market with ETH (on Augur ETH)
+     * @notice A Helper function to Buy some amount of complete sets for a market with ETH (on Augur ETH)
      ** Requirements:
      *
      * - msg.value should be equal to _amount * numTicks of the _market
@@ -228,85 +250,6 @@ contract AugurFoundry is
     ) external returns (bool) {
         permit(_expiry, _v, _r, _s);
         buyCompleteSets(_market, _account, _amount);
-    }
-
-    // We need a way to mint and wrap in one transaction w/o user having to give setApprovalForAll to this contract
-
-    //mintWrap with the abilty to mint complete sets and wrap only some of them
-
-    function mintAndWrap(
-        uint256[] memory _tokenIds,
-        uint256[] memory _wrappingAmounts,
-        address _market,
-        uint256 _mintAmount,
-        address _account
-    ) public {
-        buyCompleteSets(_market, address(this), _mintAmount);
-        //recreating the wrapMultiple tokens but the tokens are taken from address(this)
-        // wrapMultipleTokens(_tokenIds, _account, _wrappingAmounts);
-        for (uint256 i = 0; i < _tokenIds.length; i++) {
-            ERC20Wrapper erc20Wrapper = ERC20Wrapper(wrappers[_tokenIds[i]]);
-            shareToken.safeTransferFrom(
-                address(this),
-                address(erc20Wrapper),
-                _tokenIds[i],
-                _wrappingAmounts[i],
-                ''
-            );
-            erc20Wrapper.wrapTokens(_account, _wrappingAmounts[i]);
-            if (_wrappingAmounts[i] < _mintAmount) {
-                shareToken.safeTransferFrom(
-                    address(this),
-                    _msgSender(),
-                    _tokenIds[i],
-                    _wrappingAmounts[i].sub(_mintAmount),
-                    ''
-                );
-            }
-        }
-    }
-
-    function unWrapAndRedeem(
-        uint256[] memory _tokenIds,
-        address _market,
-        address _recipient,
-        uint256 _amount,
-        bytes32 _fingerprint
-    ) public {
-        for (uint256 i = 0; i < _tokenIds.length; i++) {
-            unWrapTokens(_tokenIds[i], _amount, address(this));
-        }
-        shareToken.sellCompleteSets(
-            _market,
-            address(this),
-            _recipient,
-            _amount,
-            _fingerprint
-        );
-    }
-
-    //TODO: add unwrap and redeem with option for partial unwrap
-
-    /**@dev wraps multiple tokens */
-    function wrapMultipleTokens(
-        uint256[] memory _tokenIds,
-        address _account,
-        uint256[] memory _amounts
-    ) public {
-        for (uint256 i = 0; i < _tokenIds.length; i++) {
-            wrapTokens(_tokenIds[i], _account, _amounts[i]);
-        }
-    }
-
-    /**@dev unwraps multiple tokens */
-    function unWrapMultipleTokens(
-        uint256[] memory _tokenIds,
-        uint256[] memory _amounts,
-        address _recipient
-    ) public {
-        for (uint256 i = 0; i < _tokenIds.length; i++) {
-            unWrapTokens(_tokenIds[i], _amounts[i], _recipient);
-        }
     }
 
     function claim(uint256 _tokenId) external {
