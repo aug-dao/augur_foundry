@@ -13,6 +13,8 @@ import 'openzeppelin-solidity/contracts/drafts/ERC20Permit.sol';
  * It burns ERC20s and gives back the ERC11555s.
  * AugurFoundry passed in the constructor has special permission to mint and burn.
  */
+//here the msg.sender = _msgSender
+//The augur_foundry can be used to do something in gasless manner
 
 contract ERC20Wrapper is ERC20Permit, ERC1155Receiver {
     uint256 public immutable tokenId;
@@ -130,7 +132,7 @@ contract ERC20Wrapper is ERC20Permit, ERC1155Receiver {
         if (cashBalance != 0) {
             uint256 userShare =
                 (cashBalance.mul(balanceOf(_account))).div(totalSupply());
-            if (_msgSender() != _account) {
+            if (_msgSender() != _account && _msgSender() != augurFoundry) {
                 uint256 decreasedAllowance =
                     allowance(_account, _msgSender()).sub(
                         balanceOf(_account),
@@ -164,6 +166,10 @@ contract ERC20Wrapper is ERC20Permit, ERC1155Receiver {
         bytes calldata data
     ) external override returns (bytes4) {
         /**@notice To make sure that no other tokenId other than what this ERC20 is a wrapper for is sent here*/
+        operator;
+        from;
+        value;
+        data;
         require(id == tokenId, 'Not acceptable');
         return (
             bytes4(
@@ -195,6 +201,11 @@ contract ERC20Wrapper is ERC20Permit, ERC1155Receiver {
         bytes calldata data
     ) external override returns (bytes4) {
         /**@notice This is not allowed. Just transfer one predefined id here */
+        operator;
+        from;
+        ids;
+        values;
+        data;
         return '';
     }
 }

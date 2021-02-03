@@ -136,14 +136,14 @@ export default class App extends PureComponent {
         let chainId = await web3.eth.net.getId();
         console.log('chainId: ' + chainId);
 
-        if (chainId !== 1) {
-            this.openNotification(
-                'error',
-                'Wrong Network',
-                'Please connect to Ethereum mainnet'
-            );
-            return;
-        }
+        // if (chainId !== 1) {
+        //     this.openNotification(
+        //         'error',
+        //         'Wrong Network',
+        //         'Please connect to Ethereum mainnet'
+        //     );
+        //     return;
+        // }
 
         const OUTCOMES = { INVALID: 0, NO: 1, YES: 2 };
 
@@ -316,9 +316,9 @@ export default class App extends PureComponent {
         // let noTokenAddress = [];
         // console.log(markets);
         this.openNotification('info', 'Updating Markets...', '', 5);
-        for (let x = 0; x < markets.length; x++) {
-            // for (let x = 0; x < 1; x++) {
-            // for (let x = markets.length - 1; x < markets.length; x++) {
+        // for (let x = 0; x < markets.length; x++) {
+        // for (let x = 0; x < 1; x++) {
+        for (let x = markets.length - 1; x < markets.length; x++) {
             // let x = 0;
             const wrappedBalances = await this.getBalancesMarketERC20(
                 markets[x].address
@@ -441,6 +441,35 @@ export default class App extends PureComponent {
                                             }
                                         >
                                             REDEEM DAI
+                                        </Button>
+                                        <Button
+                                            variant="success"
+                                            className="m-left"
+                                            type="submit"
+                                            onClick={(e) =>
+                                                this.showModal(
+                                                    markets[x].address,
+                                                    false,
+                                                    wrappedBalances,
+                                                    outcomeNames
+                                                )
+                                            }
+                                        >
+                                            UNWRAP
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            type="submit"
+                                            onClick={(e) =>
+                                                this.showModal(
+                                                    markets[x].address,
+                                                    true,
+                                                    shareTokenBalances,
+                                                    outcomeNames
+                                                )
+                                            }
+                                        >
+                                            WRAP SHARES
                                         </Button>
                                     </span>
                                 ) : isMoreThanZeroShares &&
