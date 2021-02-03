@@ -154,17 +154,6 @@ contract AugurFoundry is
         }
     }
 
-    /**@dev unwraps multiple tokens */
-    function unWrapMultipleTokens(
-        uint256[] memory _tokenIds,
-        uint256[] memory _amounts,
-        address _recipient
-    ) public {
-        for (uint256 i = 0; i < _tokenIds.length; i++) {
-            unWrapTokens(_tokenIds[i], _amounts[i], _recipient);
-        }
-    }
-
     /**@dev A function that burns ERC20s and gives back ERC1155s
      * Requirements:
      *
@@ -182,6 +171,17 @@ contract AugurFoundry is
     ) public {
         ERC20Wrapper erc20Wrapper = ERC20Wrapper(wrappers[_tokenId]);
         erc20Wrapper.unWrapTokens(_msgSender(), _amount, _recipient);
+    }
+
+    /**@dev unwraps multiple tokens */
+    function unWrapMultipleTokens(
+        uint256[] memory _tokenIds,
+        uint256[] memory _amounts,
+        address _recipient
+    ) public {
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            unWrapTokens(_tokenIds[i], _amounts[i], _recipient);
+        }
     }
 
     function permit(
