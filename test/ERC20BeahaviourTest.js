@@ -3,32 +3,53 @@ const {
   constants,
   expectEvent,
   expectRevert,
+  time
 } = require("@openzeppelin/test-helpers");
 const { expect } = require("chai");
-const { ZERO_ADDRESS } = constants;
+const { ZERO_ADDRESS, MAX_UINT256 } = constants;
+//for testing ERC20 permit function
+const { EIP712Domain, domainSeparator } = require('./eip712');
+
+const { fromRpcSig } = require('ethereumjs-util');
+const ethSigUtil = require('eth-sig-util');
+const Wallet = require('ethereumjs-wallet').default;
+
+const Permit = [
+  { name: 'owner', type: 'address' },
+  { name: 'spender', type: 'address' },
+  { name: 'value', type: 'uint256' },
+  { name: 'nonce', type: 'uint256' },
+  { name: 'deadline', type: 'uint256' },
+];
 
 const MockShareToken = artifacts.require("MockShareToken");
 const ERC20Wrapper = artifacts.require("ERC20Wrapper");
+const MockCash = artifacts.require("MockCash");
 const AugurFoundry = artifacts.require("AugurFoundry");
 
 contract("Wrapper Behaves Like an ERC20", function (accounts) {
-  const [initialHolder, recipient, anotherAccount] = accounts;
+  const [initialHolder, recipient, spender, anotherAccount, mockAugur, mockTrustedForwarder] = accounts;
   const tokenId = 1;
   const decimals = 16;
   const uri = "";
   const name = "test";
   const symbol = "TST";
   const initialSupply = new BN(1000);
+  const version = '1'; //ERC20 Permit related
 
   beforeEach(async function () {
     //create a new MockShareToken
     this.mockShareToken = await MockShareToken.new(uri, ZERO_ADDRESS);
+    //create mockCash token
+    this.mockCash = await MockCash.new();
 
     //deploy the augur foundry contract
     //We should deploy a mock augur foundry instead if we want to do the unit tests
     this.augurFoundry = await AugurFoundry.new(
       this.mockShareToken.address,
-      ZERO_ADDRESS
+      this.mockCash.address,
+      mockAugur,
+      mockTrustedForwarder
     ); //no need to add cash address to test this functionalities
 
     //Create a new erc20 wrapper for a tokenId of the shareTOken
@@ -46,6 +67,11 @@ contract("Wrapper Behaves Like an ERC20", function (accounts) {
     await this.token.wrapTokens(initialHolder, initialSupply, {
       from: initialHolder,
     });
+    // We get the chain id from the contract because Ganache (used for coverage) does not return the same chain id
+    // from within the EVM as from the JSON RPC interface.
+    // See https://github.com/trufflesuite/ganache-core/issues/515
+    // this.chainId = this.token.getChainId();
+    this.chainId = "1";
   });
   it("has a name", async function () {
     expect(await this.token.name()).to.equal(name);
@@ -252,6 +278,84 @@ contract("Wrapper Behaves Like an ERC20", function (accounts) {
     );
   });
 
+  describe("permit", function () {
+    it('initial nonce is 0', async function () {
+      expect(await this.token.nonces(initialHolder)).to.be.bignumber.equal('0');
+    });
+    it('domain separator', async function () {
+      expect(
+        await this.token.DOMAIN_SEPARATOR(),
+      ).to.equal(
+        await domainSeparator(name, version, this.chainId, this.token.address),
+      );
+    });
+
+    describe('permit', function () {
+      const wallet = Wallet.generate();
+
+      const owner = wallet.getAddressString();
+      const value = new BN(42);
+      const nonce = 0;
+      const maxDeadline = MAX_UINT256;
+
+      const buildData = (chainId, verifyingContract, deadline = maxDeadline) => ({
+        primaryType: 'Permit',
+        types: { EIP712Domain, Permit },
+        domain: { name, version, chainId, verifyingContract },
+        message: { owner, spender, value, nonce, deadline },
+      });
+
+      it('accepts owner signature', async function () {
+        const data = buildData(this.chainId, this.token.address);
+        const signature = ethSigUtil.signTypedMessage(wallet.getPrivateKey(), { data });
+        const { v, r, s } = fromRpcSig(signature);
+
+        const receipt = await this.token.permit(owner, spender, value, maxDeadline, v, r, s);
+
+        expect(await this.token.nonces(owner)).to.be.bignumber.equal('1');
+        expect(await this.token.allowance(owner, spender)).to.be.bignumber.equal(value);
+      });
+
+      it('rejects reused signature', async function () {
+        const data = buildData(this.chainId, this.token.address);
+        const signature = ethSigUtil.signTypedMessage(wallet.getPrivateKey(), { data });
+        const { v, r, s } = fromRpcSig(signature);
+
+        await this.token.permit(owner, spender, value, maxDeadline, v, r, s);
+
+        await expectRevert(
+          this.token.permit(owner, spender, value, maxDeadline, v, r, s),
+          'ERC20Permit: invalid signature',
+        );
+      });
+
+      it('rejects other signature', async function () {
+        const otherWallet = Wallet.generate();
+        const data = buildData(this.chainId, this.token.address);
+        const signature = ethSigUtil.signTypedMessage(otherWallet.getPrivateKey(), { data });
+        const { v, r, s } = fromRpcSig(signature);
+
+        await expectRevert(
+          this.token.permit(owner, spender, value, maxDeadline, v, r, s),
+          'ERC20Permit: invalid signature',
+        );
+      });
+
+      it('rejects expired permit', async function () {
+        const deadline = (await time.latest()) - time.duration.weeks(1);
+
+        const data = buildData(this.chainId, this.token.address, deadline);
+        const signature = ethSigUtil.signTypedMessage(wallet.getPrivateKey(), { data });
+        const { v, r, s } = fromRpcSig(signature);
+
+        await expectRevert(
+          this.token.permit(owner, spender, value, deadline, v, r, s),
+          'ERC20Permit: expired deadline',
+        );
+      });
+    });
+  });
+
   function shouldBehaveLikeERC20Transfer(from, to, balance, transfer) {
     describe("when the recipient is not the zero address", function () {
       describe("when the sender does not have enough balance", function () {
@@ -422,4 +526,6 @@ contract("Wrapper Behaves Like an ERC20", function (accounts) {
       });
     });
   }
+
+
 });
