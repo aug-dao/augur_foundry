@@ -239,7 +239,7 @@ contract AugurFoundry is
      * @param _amount The number of complete sets to purchase
      * @return Bool True
      */
-    function PermitAndBuyCompleteSets(
+    function permitAndBuyCompleteSets(
         address _market,
         address _account,
         uint256 _amount,

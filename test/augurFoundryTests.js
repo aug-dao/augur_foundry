@@ -13,7 +13,7 @@ const ERC20Wrapper = artifacts.require("ERC20Wrapper");
 const AugurFoundry = artifacts.require("AugurFoundry");
 
 contract("ERC20Wrapper", function (accounts) {
-  const [initialHolder, otherAccount, anotherAccount] = accounts;
+  const [initialHolder, otherAccount, anotherAccount, mockAugur, mockTrustedForwarder] = accounts;
   var tokenId;
   const decimals = 18;
   const uri = "";
@@ -30,7 +30,7 @@ contract("ERC20Wrapper", function (accounts) {
     //We should deploy a mock augur foundry instead if we want to do the unit tests
     this.augurFoundry = await AugurFoundry.new(
       this.mockShareToken.address,
-      this.mockCash.address
+      this.mockCash.address, mockAugur, mockTrustedForwarder
     );
 
     //Create a new erc20 wrapper for a tokenId of the shareTOken
@@ -138,12 +138,12 @@ contract("ERC20Wrapper", function (accounts) {
       ).to.be.bignumber.equal(initialSupply);
     });
     it("when user directly unwraps tokens", async function () {
-      await this.erc20Wrapper.unWrapTokens(initialHolder, initialSupply, {
+      await this.erc20Wrapper.unWrapTokens(initialHolder, initialSupply, initialHolder, {
         from: initialHolder,
       });
     });
     it("when augur foundry unwraps for them", async function () {
-      await this.augurFoundry.unWrapTokens(tokenId, initialSupply, {
+      await this.augurFoundry.unWrapTokens(tokenId, initialSupply, initialHolder, {
         from: initialHolder,
       });
     });
@@ -212,7 +212,7 @@ contract("ERC20Wrapper", function (accounts) {
 });
 
 contract("AugurFoundry", function (accounts) {
-  const [initialHolder, mockCashAddress] = accounts;
+  const [initialHolder, mockAugur, mockTrustedForwarder] = accounts;
   const tokenIds = [1, 2];
   const decimals = [18, 18];
   const uri = "";
@@ -222,12 +222,14 @@ contract("AugurFoundry", function (accounts) {
   beforeEach(async function () {
     //create a new MockShareToken
     this.mockShareToken = await MockShareToken.new(uri, ZERO_ADDRESS);
+    const chainId = "1";
+    this.mockCash = await MockCash.new(chainId);
 
     //deploy the augur foundry contract
     //We should deploy a mock augur foundry instead if we want to do the unit tests
     this.augurFoundry = await AugurFoundry.new(
       this.mockShareToken.address,
-      mockCashAddress
+      this.mockCash.address, mockAugur, mockTrustedForwarder
     );
 
     //mint initialHolder some ERC1155 of tokenId
@@ -362,6 +364,7 @@ contract("AugurFoundry", function (accounts) {
       let { tx } = await this.augurFoundry.unWrapMultipleTokens(
         tokenIds,
         [initialSupply, initialSupply],
+        initialHolder,
         {
           from: initialHolder,
         }
