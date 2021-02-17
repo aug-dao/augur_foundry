@@ -22,7 +22,7 @@
             "Invalid",
             "Novak Djokovic",
             "Daniil Medvedev",
-            "Rafael Nadal",
+            "Rafael Nadal (disqualified)",
             "Stefanos Tsitsipas",
             "Aslan Karatsev"
         ],
@@ -35,9 +35,13 @@
             "43143203873202316611583600659802971380807062505218038917034247814826701094912"
         ],
         "tokenAddresses": [
-            "0xf7cf47b411d251e462254956b6267d6bca0e4537",
-            "0xffc16ab7d366273466c705f03cfeaca8dd964f89",
-            "0xd4cabf0b165cbf076058f55766c7805bb5169dcf"
+            "0x9d86148d2239c291f558e558941ed0a5934e27dc",
+            "0x56f63e2970e39a34ff2a0ac21deb5819d5ff67f4",
+            "0x5e07303e583e66ec8c7bb9df0c91586cc6bc5895",
+            "0xa914ee19bfe0778e9f0368a93f42fc9b7bac54e6",
+            "0xa914ee19bfe0778e9f0368a93f42fc9b7bac54e6",
+            "0x62fdd6b24e054534613f7921991d25e3baa6f985",
+            "0x7d3ed4e5b056d9f0038fda98986b4574947f1d58"
         ],
         "tokenIcons": [
             null,

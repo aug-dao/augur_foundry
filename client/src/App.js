@@ -249,7 +249,7 @@ export default class App extends PureComponent {
         let defaultInputAmounts = [];
         let inputAmountKeys = [];
 
-        let defaultToZero = ["Invalid"];
+        let defaultToZero = ["Invalid", "Rafael Nadal (disqualified)"];
         let defaultToZeroMarkets = ["0x5f623023Ab1e7fF12B8fc02E4ee8CDcaD67d0e80"]; //Australian Open Market
 
         let someData = [];
