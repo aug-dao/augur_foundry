@@ -1663,20 +1663,24 @@ export default class App extends PureComponent {
                                                                 }
                                                             </p>
                                                         </div>
-                                                        <div className="tooltip-item">
-                                                            <h5>
-                                                                Market
+                                                        {this.state
+                                                            .selectedMarket
+                                                            .extraInfo
+                                                            .longDescription ? <div className="tooltip-item">
+                                                                <h5>
+                                                                    Market
                                                                 Description:{' '}
-                                                            </h5>
-                                                            <p>
-                                                                {
-                                                                    this.state
-                                                                        .selectedMarket
-                                                                        .extraInfo
-                                                                        .longDescription
-                                                                }
-                                                            </p>
-                                                        </div>
+                                                                </h5>
+                                                                <p>
+                                                                    {
+                                                                        this.state
+                                                                            .selectedMarket
+                                                                            .extraInfo
+                                                                            .longDescription
+                                                                    }
+                                                                </p>
+                                                            </div> : <div></div>}
+
                                                         <div className="tooltip-item">
                                                             <h5>
                                                                 Expiration Date:{' '}
