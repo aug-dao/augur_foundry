@@ -249,6 +249,9 @@ export default class App extends PureComponent {
         let defaultInputAmounts = [];
         let inputAmountKeys = [];
 
+        let defaultToZero = ["Invalid"];
+        let defaultToZeroMarkets = ["0x5f623023Ab1e7fF12B8fc02E4ee8CDcaD67d0e80"]; //Australian Open Market
+
         let someData = [];
         for (let i = 0; i < tokenIds.length; i++) {
             defaultInputAmounts.push(web3.utils.fromWei(balances[i]));
@@ -276,7 +279,7 @@ export default class App extends PureComponent {
                                 placeholder={
                                     'Amount of ' + outcomeNames[i] + ' Shares'
                                 }
-                                defaultValue={web3.utils.fromWei(balances[i])}
+                                defaultValue={isWrapping && defaultToZero.indexOf(outcomeNames[i]) !== -1 && defaultToZeroMarkets.indexOf(marketAddress) !== -1 ? 0 : web3.utils.fromWei(balances[i])}
                                 onChange={this.handleChange}
                                 style={{ display: 'inline' }}
                             />
