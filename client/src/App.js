@@ -1810,34 +1810,10 @@ export default class App extends PureComponent {
                         <Row>
                             <Col>
                                 <a
-                                    href="https://pools.balancer.exchange/#/pool/0x6b74fb4e4b3b177b8e95ba9fa4c3a3121d22fbfb/"
+                                    href="https://pools.balancer.exchange/#/pool/0xca151702b0705047f4906d57d2c60d34900c4374/"
                                     target="_blank"
                                 >
-                                    <h5>yTrump/nTrump/DAI </h5>
-                                </a>
-                            </Col>
-                            <Col>
-                                <a
-                                    href="https://pools.balancer.exchange/#/pool/0xed0413d19cdf94759bbe3fe9981c4bd085b430cf"
-                                    target="_blank"
-                                >
-                                    <h5>nTrump/DAI </h5>
-                                </a>
-                            </Col>
-                            <Col>
-                                <a
-                                    href="https://pools.balancer.exchange/#/pool/0x68c74e157f35a3e40f1b02bba3e6e3827d534059"
-                                    target="_blank"
-                                >
-                                    <h5>yBlue/nBlue/DAI </h5>
-                                </a>
-                            </Col>
-                            <Col>
-                                <a
-                                    href="https://pools.balancer.exchange/#/pool/0xd4f73d51098df4dbe841cbbe3fa77d735422f656/"
-                                    target="_blank"
-                                >
-                                    <h5>SUPER BOWL (Chiefs/Bucs/DAI)</h5>
+                                    <h5>Australian Open</h5>
                                 </a>
                             </Col>
                         </Row>
